@@ -1,0 +1,324 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #1a0f1a;
+  --foreground: #f5f1f5;
+  --card: #4B1C3F;
+  --card-foreground: #f5f1f5;
+  --popover: #2C1E4A;
+  --popover-foreground: #f5f1f5;
+  --primary: #FFD369;
+  --primary-foreground: #1a0f1a;
+  --secondary: #2C1E4A;
+  --secondary-foreground: #f5f1f5;
+  --muted: #4B1C3F;
+  --muted-foreground: #d4c5d4;
+  --accent: #FFD369;
+  --accent-foreground: #1a0f1a;
+  --destructive: #A30B37;
+  --destructive-foreground: #f5f1f5;
+  --border: #4B1C3F;
+  --input: #2C1E4A;
+  --input-background: #2C1E4A;
+  --switch-background: #4B1C3F;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #FFD369;
+  --chart-1: #4B1C3F;
+  --chart-2: #2C1E4A;
+  --chart-3: #1C3A2E;
+  --chart-4: #B85C38;
+  --chart-5: #A30B37;
+  --radius: 0.625rem;
+  --sidebar: #2C1E4A;
+  --sidebar-foreground: #f5f1f5;
+  --sidebar-primary: #FFD369;
+  --sidebar-primary-foreground: #1a0f1a;
+  --sidebar-accent: #4B1C3F;
+  --sidebar-accent-foreground: #f5f1f5;
+  --sidebar-border: #4B1C3F;
+  --sidebar-ring: #FFD369;
+  
+  /* Custom beauty theme colors */
+  --plum: #4B1C3F;
+  --navy-violet: #2C1E4A;
+  --forest-green: #1C3A2E;
+  --burnt-orange: #B85C38;
+  --maroon: #A30B37;
+  --gold: #FFD369;
+  --dark-bg: #1a0f1a;
+  --light-text: #f5f1f5;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+  scroll-behavior: smooth;
+}
+
+/* Essential animation utilities */
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .backdrop-blur-glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(44, 30, 74, 0.8);
+    border: 1px solid rgba(255, 211, 105, 0.2);
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 20px rgba(255, 211, 105, 0.3);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(255, 211, 105, 0.5);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 211, 105, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 211, 105, 0.8), 0 0 30px rgba(255, 211, 105, 0.4);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a0f1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #FFD369, #4B1C3F);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFD369, #A30B37);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(255, 211, 105, 0.3);
+  color: #f5f1f5;
+}
+
+/* Enhanced focus styles */
+*:focus-visible {
+  outline: 2px solid #FFD369;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input, textarea, select {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glass morphism utility classes */
+.glass-dark {
+  background: rgba(44, 30, 74, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 211, 105, 0.1);
+}
+
+/* Enhanced hover states */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 211, 105, 0.3);
+  border-top: 4px solid #FFD369;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Improved mobile touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  .hover-lift:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+  
+  button:active, .card-interactive:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+}
