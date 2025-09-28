@@ -7,18 +7,18 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Separator } from './ui/separator';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'sonner';
-
+import { isLoggedIn, getUserIdFromToken } from './services/auth';
+import { placeOrder } from './services/costumer';
 interface CartPageProps {
   setCurrentPage: (page: string) => void;
 }
 
 export default function CartPage({ setCurrentPage }: CartPageProps) {
-  const { items, updateQuantity, removeFromCart, getCartTotal, checkout } = useCart();
+  const { items, updateQuantity, removeFromCart, getCartTotal } = useCart();
   const { user } = useAuth();
   const [promoCode, setPromoCode] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<any>(null);
@@ -34,13 +34,18 @@ export default function CartPage({ setCurrentPage }: CartPageProps) {
     zipCode: user?.address?.zipCode || '',
     country: user?.address?.country || 'USA'
   });
+   console.log("Current cart products:", items);
   const [paymentInfo, setPaymentInfo] = useState({
-    type: 'card' as 'card' | 'paypal' | 'apple_pay',
+    type: 'card' as 'card' | 'paypal' | 'apple_pay'|'online'|'cod',
     cardNumber: '',
     expiryDate: '',
     cvv: '',
     cardName: ''
   });
+const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number }>({
+  latitude: 0,
+  longitude: 0
+});
 
   const applyPromoCode = () => {
     if (promoCode.toLowerCase() === 'save20') {
@@ -74,36 +79,95 @@ export default function CartPage({ setCurrentPage }: CartPageProps) {
   
   const total = subtotal + shipping + tax - discount;
 
-  const handleCheckout = async () => {
-    if (!user) {
-      toast.error('Please sign in to checkout');
-      setCurrentPage('login');
-      return;
-    }
+const {  clearCart } = useCart();
 
-    if (!shippingInfo.name || !shippingInfo.email || !shippingInfo.street || !shippingInfo.city) {
-      toast.error('Please fill in all shipping information');
-      return;
-    }
+const handleCheckout = async () => {
+  if (!isLoggedIn()) {
+    toast.error("Please log in to place an order");
+    setCurrentPage("login");
+    return;
+  }
 
-    if (paymentInfo.type === 'card' && (!paymentInfo.cardNumber || !paymentInfo.expiryDate || !paymentInfo.cvv)) {
-      toast.error('Please fill in all payment information');
-      return;
-    }
+  if (!shippingInfo.name || !shippingInfo.email || !shippingInfo.street || !shippingInfo.city) {
+    toast.error("Please fill in all shipping information");
+    return;
+  }
 
-    setIsCheckingOut(true);
+  if (paymentInfo.type === "card" && (!paymentInfo.cardNumber || !paymentInfo.expiryDate || !paymentInfo.cvv)) {
+    toast.error("Please fill in all payment information");
+    return;
+  }
 
-    try {
-      const orderId = await checkout(shippingInfo, paymentInfo);
-      toast.success(`Order placed successfully! Order ID: ${orderId}`);
-      setShowCheckout(false);
-      setCurrentPage('orders');
-    } catch (error) {
-      toast.error('Checkout failed. Please try again.');
-    } finally {
-      setIsCheckingOut(false);
+  setIsCheckingOut(true);
+
+  try {
+    const userId = getUserIdFromToken() || user?.id;
+    if (!userId) throw new Error("User ID not found");
+
+
+    const products = items.map(item => ({
+  productId: item.productId,
+  quantity: item.quantity
+}));
+    const price = getCartTotal();
+
+    // Get user's current location
+    const getCoordinates = (): Promise<{ latitude: number; longitude: number }> =>
+      new Promise((resolve) => {
+        if (!navigator.geolocation) return resolve({ latitude: 0, longitude: 0 });
+        navigator.geolocation.getCurrentPosition(
+          (position) => resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }),
+          () => resolve({ latitude: 0, longitude: 0 }) // fallback if user denies
+        );
+      });
+
+    const { latitude, longitude } = await getCoordinates();
+
+    const orderRequest = {
+      userId,
+      products,
+      address: `${shippingInfo.street}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.country}`,
+      pincode: parseInt(shippingInfo.zipCode),
+      price,
+      phone: shippingInfo.phone,
+      paymentMethod: paymentInfo.type
+    };
+
+    const response = await placeOrder(orderRequest, latitude, longitude);
+
+    toast.success(response);
+    clearCart(); // clear cart after successful order
+    setCurrentPage("orders");
+  } catch (error: any) {
+    console.error("Place order failed:", error);
+    toast.error(error.message || "Failed to place order");
+  } finally {
+    setIsCheckingOut(false);
+  }
+};
+
+const getLocation = () => {
+  if (!navigator.geolocation) {
+    toast.error("Geolocation is not supported by your browser");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords;
+      setCoordinates({ latitude, longitude });
+      toast.success(`Location fetched! Latitude: ${latitude.toFixed(4)}, Longitude: ${longitude.toFixed(4)}`);
+    },
+    (error) => {
+      console.error(error);
+      toast.error("Failed to get location. Please allow location access.");
     }
-  };
+  );
+};
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -181,108 +245,107 @@ export default function CartPage({ setCurrentPage }: CartPageProps) {
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4">
               <AnimatePresence>
-                {items.map((item) => (
-                  <motion.div
-                    key={`${item.id}-${item.color}-${item.size}`}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit={{ x: -300, opacity: 0 }}
-                    layout
-                  >
-                    <Card className="bg-[#2C1E4A] border-[#FFD369]/20 hover:border-[#FFD369] transition-all duration-300">
-                      <CardContent className="p-6">
-                        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-                          <div className="flex-shrink-0">
-                            <ImageWithFallback
-                              src={item.image}
-                              alt={item.name}
-                              className="w-full sm:w-24 h-32 sm:h-24 object-cover rounded-lg"
-                            />
-                          </div>
+  {items.map((item) => (
+    <motion.div
+      key={item.productId} // use productId as key
+      variants={itemVariants}
+      initial="hidden"
+      animate="visible"
+      exit={{ x: -300, opacity: 0 }}
+      layout
+    >
+      <Card className="bg-[#2C1E4A] border-[#FFD369]/20 hover:border-[#FFD369] transition-all duration-300">
+        <CardContent className="p-6">
+          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+            <div className="flex-shrink-0">
+              <ImageWithFallback
+                src={item.image}
+                alt={item.name}
+                className="w-full sm:w-24 h-32 sm:h-24 object-cover rounded-lg"
+              />
+            </div>
 
-                          <div className="flex-1 space-y-3">
-                            <div>
-                              {item.brand && <p className="text-sm text-[#FFD369]">{item.brand}</p>}
-                              <h3 className="font-semibold text-white text-lg">{item.name}</h3>
-                              {item.color && <p className="text-sm text-white/70">Color: {item.color}</p>}
-                              {item.size && <p className="text-sm text-white/70">Size: {item.size}</p>}
-                              {!item.inStock && (
-                                <p className="text-sm text-red-400 font-medium">Currently out of stock</p>
-                              )}
-                            </div>
+            <div className="flex-1 space-y-3">
+              <div>
+                {item.brand && <p className="text-sm text-[#FFD369]">{item.brand}</p>}
+                <h3 className="font-semibold text-white text-lg">{item.name}</h3>
+                {!item.inStock && (
+                  <p className="text-sm text-red-400 font-medium">Currently out of stock</p>
+                )}
+              </div>
 
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
-                              <div className="flex items-center space-x-2">
-                                <span className="text-xl font-bold text-[#FFD369]">
-                                  ${item.price.toFixed(2)}
-                                </span>
-                                {item.originalPrice && item.originalPrice > item.price && (
-                                  <span className="text-sm text-white/50 line-through">
-                                    ${item.originalPrice.toFixed(2)}
-                                  </span>
-                                )}
-                              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
+                <div className="flex items-center space-x-2">
+                  <span className="text-xl font-bold text-[#FFD369]">
+                    ${item.price.toFixed(2)}
+                  </span>
+                  {item.originalPrice && item.originalPrice > item.price && (
+                    <span className="text-sm text-white/50 line-through">
+                      ${item.originalPrice.toFixed(2)}
+                    </span>
+                  )}
+                </div>
 
-                              <div className="flex items-center space-x-4">
-                                <div className="flex items-center bg-[#4B1C3F] rounded-lg">
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                    className="text-white hover:text-[#FFD369] h-8 w-8"
-                                  >
-                                    <Minus className="w-4 h-4" />
-                                  </Button>
-                                  <span className="px-3 py-1 text-white min-w-[2rem] text-center">
-                                    {item.quantity}
-                                  </span>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                    className="text-white hover:text-[#FFD369] h-8 w-8"
-                                    disabled={!item.inStock}
-                                  >
-                                    <Plus className="w-4 h-4" />
-                                  </Button>
-                                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center bg-[#4B1C3F] rounded-lg">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                      className="text-white hover:text-[#FFD369] h-8 w-8"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                    <span className="px-3 py-1 text-white min-w-[2rem] text-center">
+                      {item.quantity}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                      className="text-white hover:text-[#FFD369] h-8 w-8"
+                      disabled={!item.available}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
 
-                                <span className="font-semibold text-white">
-                                  ${(item.price * item.quantity).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
+                  <span className="font-semibold text-white">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </span>
+                </div>
+              </div>
 
-                            <div className="flex space-x-3">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-[#FFD369] hover:text-white p-0"
-                              >
-                                <Heart className="w-4 h-4 mr-1" />
-                                Save for Later
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  removeFromCart(item.id);
-                                  toast.success('Item removed from cart');
-                                }}
-                                className="text-red-400 hover:text-red-300 p-0"
-                              >
-                                <Trash2 className="w-4 h-4 mr-1" />
-                                Remove
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+              <div className="flex space-x-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-[#FFD369] hover:text-white p-0"
+                >
+                  <Heart className="w-4 h-4 mr-1" />
+                  Save for Later
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    removeFromCart(item.productId);
+                    toast.success("Item removed from cart");
+                  }}
+                  className="text-red-400 hover:text-red-300 p-0"
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Remove
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  ))}
+</AnimatePresence>
+
             </div>
 
             {/* Order Summary */}
@@ -446,52 +509,36 @@ export default function CartPage({ setCurrentPage }: CartPageProps) {
                           </div>
                         </div>
 
-                        {/* Payment Information */}
-                        <div className="space-y-4">
-                          <h3 className="font-semibold text-white">Payment Method</h3>
-                          <Select value={paymentInfo.type} onValueChange={(value: any) => setPaymentInfo({...paymentInfo, type: value})}>
-                            <SelectTrigger className="bg-[#1a0f1a] border-[#FFD369]/30 text-white">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#2C1E4A] border-[#FFD369]/20">
-                              <SelectItem value="card">Credit/Debit Card</SelectItem>
-                              <SelectItem value="paypal">PayPal</SelectItem>
-                              <SelectItem value="apple_pay">Apple Pay</SelectItem>
-                            </SelectContent>
-                          </Select>
+                        {/* Payment Method */}
+<div style={{ marginBottom: '1rem' }}>
+  <h3 style={{ fontWeight: '600', color: '#FFFFFF', marginBottom: '0.5rem' }}>Payment Method</h3>
 
-                          {paymentInfo.type === 'card' && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="md:col-span-2">
-                                <Label className="text-white">Card Number</Label>
-                                <Input
-                                  placeholder="1234 5678 9012 3456"
-                                  value={paymentInfo.cardNumber}
-                                  onChange={(e) => setPaymentInfo({...paymentInfo, cardNumber: e.target.value})}
-                                  className="bg-[#1a0f1a] border-[#FFD369]/30 text-white"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-white">Expiry Date</Label>
-                                <Input
-                                  placeholder="MM/YY"
-                                  value={paymentInfo.expiryDate}
-                                  onChange={(e) => setPaymentInfo({...paymentInfo, expiryDate: e.target.value})}
-                                  className="bg-[#1a0f1a] border-[#FFD369]/30 text-white"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-white">CVV</Label>
-                                <Input
-                                  placeholder="123"
-                                  value={paymentInfo.cvv}
-                                  onChange={(e) => setPaymentInfo({...paymentInfo, cvv: e.target.value})}
-                                  className="bg-[#1a0f1a] border-[#FFD369]/30 text-white"
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF' }}>
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="cod"
+        checked={paymentInfo.type === 'cod'}
+        onChange={() => setPaymentInfo({ ...paymentInfo, type: 'cod' })}
+        style={{ accentColor: '#FFD369' }}
+      />
+      <span>Cash on Delivery</span>
+    </label>
+
+    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF' }}>
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="online"
+        checked={paymentInfo.type === 'online'}
+        onChange={() => setPaymentInfo({ ...paymentInfo, type: 'online' })}
+        style={{ accentColor: '#FFD369' }}
+      />
+      <span>Online Payment</span>
+    </label>
+  </div>
+</div>
 
                         {/* Order Summary */}
                         <div className="bg-[#1a0f1a] p-4 rounded-lg">
@@ -523,6 +570,18 @@ export default function CartPage({ setCurrentPage }: CartPageProps) {
                             </div>
                           </div>
                         </div>
+<Button
+  onClick={getLocation}
+  className="w-full bg-[#4B1C3F] text-[#FFD369] hover:bg-[#FFD369]/20 mb-4"
+>
+  Get My Location
+</Button>
+
+{coordinates.latitude !== 0 && coordinates.longitude !== 0 && (
+  <p className="text-white text-sm mb-2">
+    Latitude: {coordinates.latitude.toFixed(4)}, Longitude: {coordinates.longitude.toFixed(4)}
+  </p>
+)}
 
                         <Button
                           onClick={handleCheckout}

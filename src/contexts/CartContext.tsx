@@ -1,18 +1,9 @@
 import React, { createContext, useContext, useState, useEffect,  } from 'react';
 import type { ReactNode } from 'react';
-export interface CartItem {
-  id: number;
-  name: string;
-  brand?: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
+import type { Product } from '../components/ProductCard';
+export interface CartItem extends Product {
   quantity: number;
-  color?: string;
-  size?: string;
-  inStock: boolean;
 }
-
 export interface Order {
   id: string;
   items: CartItem[];
@@ -41,8 +32,8 @@ interface CartContextType {
   items: CartItem[];
   orders: Order[];
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
   getCartCount: () => number;
@@ -92,44 +83,37 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     localStorage.setItem('orders', JSON.stringify(orders));
   }, [orders]);
 
-  const addToCart = (newItem: Omit<CartItem, 'quantity'>) => {
-    setItems(prevItems => {
-      const existingItem = prevItems.find(item => 
-        item.id === newItem.id && 
-        item.color === newItem.color && 
-        item.size === newItem.size
+ const addToCart = (newItem: Omit<CartItem, 'quantity'>) => {
+  setItems(prevItems => {
+    const existingItem = prevItems.find(item => item.productId === newItem.productId);
+
+    if (existingItem) {
+      return prevItems.map(item =>
+        item.productId === existingItem.productId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
       );
-
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === existingItem.id && 
-          item.color === existingItem.color && 
-          item.size === existingItem.size
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevItems, { ...newItem, quantity: 1 }];
-      }
-    });
-  };
-
-  const removeFromCart = (id: number) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id));
-  };
-
-  const updateQuantity = (id: number, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(id);
-      return;
+    } else {
+      return [...prevItems, { ...newItem, quantity: 1 }];
     }
+  });
+};
 
-    setItems(prevItems =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+
+
+  const removeFromCart = (id: string) => {
+    setItems(prevItems => prevItems.filter(item => item.productId !== id));
   };
+
+  const updateQuantity = (id: string, newQuantity: number) => {
+  setItems(prevItems =>
+    prevItems.map(item =>
+      item.productId === id
+        ? { ...item, quantity: newQuantity < 1 ? 1 : newQuantity }
+        : item
+    )
+  );
+};
 
   const clearCart = () => {
     setItems([]);

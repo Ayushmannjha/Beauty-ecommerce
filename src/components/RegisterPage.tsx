@@ -6,8 +6,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Checkbox } from './ui/checkbox';
-import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'sonner';
+import { registerCustomer } from './services/auth';
 
 interface RegisterPageProps {
   setCurrentPage: (page: string) => void;
@@ -26,8 +26,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptNewsletter, setAcceptNewsletter] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
-
-  const { register, isLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -55,25 +54,28 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
     }
 
     try {
-      const success = await register({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password
-      });
+  setIsLoading(true);
+  const response = await registerCustomer({
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    password: formData.password
+  });
 
-      if (success) {
-        setIsSuccess(true);
-        toast.success('Account created successfully!');
-        setTimeout(() => {
-          setCurrentPage('home');
-        }, 2000);
-      } else {
-        toast.error('Registration failed. Please try again.');
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.');
-    }
+  if (response?.token) {
+    setIsSuccess(true);
+    toast.success('Account created successfully!');
+    setTimeout(() => {
+      setCurrentPage('home');
+    }, 2000);
+  } else {
+    toast.error('Registration failed. Please try again.');
+  }
+} catch (error: any) {
+  toast.error(error?.message || 'An unexpected error occurred.');
+} finally {
+  setIsLoading(false);
+}
   };
 
   const containerVariants = {
@@ -97,19 +99,18 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
     }
   };
 
- const successVariants = {
-  hidden: { scale: 0, rotate: -180 },
-  visible: {
-    scale: 1,
-    rotate: 0,
-    transition: {
-      type: "spring" as const, // 👈 force TS to treat it as literal
-      stiffness: 200,
-      damping: 15,
+  const successVariants = {
+    hidden: { scale: 0, rotate: -180 },
+    visible: {
+      scale: 1,
+      rotate: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 200,
+        damping: 15,
+      },
     },
-  },
-};
-
+  };
 
   if (isSuccess) {
     return (
@@ -157,6 +158,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
 
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Name */}
               <motion.div variants={itemVariants} className="space-y-2">
                 <Label htmlFor="name" className="text-white">Full Name</Label>
                 <div className="relative">
@@ -174,6 +176,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
                 </div>
               </motion.div>
 
+              {/* Email */}
               <motion.div variants={itemVariants} className="space-y-2">
                 <Label htmlFor="email" className="text-white">Email Address</Label>
                 <div className="relative">
@@ -191,6 +194,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
                 </div>
               </motion.div>
 
+              {/* Phone */}
               <motion.div variants={itemVariants} className="space-y-2">
                 <Label htmlFor="phone" className="text-white">Phone Number (Optional)</Label>
                 <div className="relative">
@@ -207,6 +211,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
                 </div>
               </motion.div>
 
+              {/* Password */}
               <motion.div variants={itemVariants} className="space-y-2">
                 <Label htmlFor="password" className="text-white">Password</Label>
                 <div className="relative">
@@ -231,6 +236,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
                 </div>
               </motion.div>
 
+              {/* Confirm Password */}
               <motion.div variants={itemVariants} className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-white">Confirm Password</Label>
                 <div className="relative">
@@ -255,6 +261,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
                 </div>
               </motion.div>
 
+              {/* Terms & Newsletter */}
               <motion.div variants={itemVariants} className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <Checkbox
@@ -275,7 +282,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
                   <Checkbox
                     id="newsletter"
                     checked={acceptNewsletter}
-                     onCheckedChange={(checked) => setAcceptNewsletter(checked === true)}
+                    onCheckedChange={(checked) => setAcceptNewsletter(checked === true)}
                     className="border-[#FFD369] data-[state=checked]:bg-[#FFD369] data-[state=checked]:text-[#1a0f1a]"
                   />
                   <Label htmlFor="newsletter" className="text-sm text-white/80">
@@ -284,6 +291,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
                 </div>
               </motion.div>
 
+              {/* Submit */}
               <motion.div variants={itemVariants}>
                 <Button
                   type="submit"
@@ -306,6 +314,7 @@ export default function RegisterPage({ setCurrentPage }: RegisterPageProps) {
               </motion.div>
             </form>
 
+            {/* Redirect to login */}
             <motion.div variants={itemVariants} className="text-center pt-4 border-t border-[#FFD369]/20">
               <p className="text-white/70">
                 Already have an account?{' '}
