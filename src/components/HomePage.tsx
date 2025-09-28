@@ -174,20 +174,7 @@ const pricePlans = [
                 </p>
 
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                  <Button
-                    className="bg-[#FFD369] text-[#1a0f1a] hover:bg-[#FFD369]/90 px-8 py-3 text-lg font-semibold"
-                    onClick={() => setCurrentPage("products")}
-                  >
-                    Shop Now <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="border-2 border-[#FFD369] text-[#FFD369] hover:bg-[#FFD369] hover:text-[#1a0f1a] px-8 py-3 text-lg"
-                    onClick={() => setCurrentPage("products")}
-                  >
-                    Explore Collection
-                  </Button>
+                  
                 </div>
               </motion.div>
             </div>
