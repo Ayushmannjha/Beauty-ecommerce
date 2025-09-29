@@ -118,7 +118,7 @@ const handleSearch = async (e: React.FormEvent) => {
                 <Sparkles className="w-8 h-8 text-[#FFD369]" />
               </motion.div>
               <motion.h1
-                className="text-3xl font-bold text-[#FFD369]"
+                className="text-2xl font-bold text-[#FFD369]"
                 initial={{ x: -20 }}
                 animate={{ x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -210,13 +210,6 @@ const handleSearch = async (e: React.FormEvent) => {
               </Button>
             )}
 
-            {/* Wishlist */}
-            <Button variant="ghost" size="icon" className="text-[#FFD369] hover:bg-[#2C1E4A] relative">
-              <Heart className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 bg-[#A30B37] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                3
-              </span>
-            </Button>
 
             {/* Cart */}
             <Button
