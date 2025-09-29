@@ -1,7 +1,7 @@
 // homepageApi.ts
 import axios from "axios";
 
-const API_BASE_URL = "https://api.shreeaura.com";
+const API_BASE_URL = "https://api.shreeaura.in";
 
 export const HomePageApi = {
   getAllProducts: async () => axios.get(`${API_BASE_URL}/get-all-products`),

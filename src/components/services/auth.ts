@@ -1,5 +1,5 @@
 // src/services/auth-api.ts
-export const API_BASE = "https://api.shreeaura.com";
+export const API_BASE = "https://api.shreeaura.in";
  
 
 export interface User {
