@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import { motion, AnimatePresence, number } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Trash2, Plus, Minus, Heart, ShoppingBag, Tag, Truck, CreditCard, Shield, CheckCircle, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';

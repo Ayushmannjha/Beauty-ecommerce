@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { Search, ShoppingBag, Menu, Sparkles, X, Home } from "lucide-react";
+import { Search, ShoppingBag, Menu, X, Home } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
