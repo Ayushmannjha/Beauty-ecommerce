@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, number } from 'motion/react';
 import { Trash2, Plus, Minus, Heart, ShoppingBag, Tag, Truck, CreditCard, Shield, CheckCircle, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
@@ -29,10 +29,11 @@ export default function CartPage({ setCurrentPage }: CartPageProps) {
     email: user?.email || '',
     phone: user?.phone || '',
     street: user?.address?.street || '',
+    pincode:user?.pincode||'',
     city: user?.address?.city || '',
     state: user?.address?.state || '',
     zipCode: user?.address?.zipCode || '',
-    country: user?.address?.country || 'USA'
+    country: user?.address?.country || 'INDIA'
   });
    console.log("Current cart products:", items);
   const [paymentInfo, setPaymentInfo] = useState({
@@ -88,7 +89,7 @@ const handleCheckout = async () => {
     return;
   }
 
-  if (!shippingInfo.name || !shippingInfo.email || !shippingInfo.street || !shippingInfo.city) {
+  if (!shippingInfo.name || !shippingInfo.email || !shippingInfo.street || !shippingInfo.city||!shippingInfo.pincode) {
     toast.error("Please fill in all shipping information");
     return;
   }
@@ -130,7 +131,7 @@ const handleCheckout = async () => {
       userId,
       products,
       address: `${shippingInfo.street}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.country}`,
-      pincode: parseInt(shippingInfo.zipCode),
+      pincode: parseInt(shippingInfo.pincode),
       price,
       phone: shippingInfo.phone,
       paymentMethod: paymentInfo.type
@@ -503,6 +504,14 @@ const getLocation = () => {
                               <Input
                                 value={shippingInfo.state}
                                 onChange={(e) => setShippingInfo({...shippingInfo, state: e.target.value})}
+                                className="bg-[#1a0f1a] border-[#FFD369]/30 text-white"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-white">Pincode</Label>
+                              <Input
+                                value={shippingInfo.pincode}
+                                onChange={(e) => setShippingInfo({...shippingInfo, pincode: e.target.value})}
                                 className="bg-[#1a0f1a] border-[#FFD369]/30 text-white"
                               />
                             </div>

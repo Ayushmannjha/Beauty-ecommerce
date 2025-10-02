@@ -6,6 +6,7 @@ interface User {
   name: string;
   avatar?: string;
   phone?: string;
+  pincode?:string;
   address?: {
     street: string;
     city: string;

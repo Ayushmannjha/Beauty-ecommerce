@@ -110,21 +110,25 @@ const handleSearch = async (e: React.FormEvent) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <motion.div
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="mr-2"
-              >
-                <Sparkles className="w-8 h-8 text-[#FFD369]" />
-              </motion.div>
-              <motion.h1
-                className="text-2xl font-bold text-[#FFD369]"
-                initial={{ x: -20 }}
-                animate={{ x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                ShreeAura
-              </motion.h1>
+          <div className="flex items-center gap-2">
+  <img 
+    src="/श्री  Aura.png" 
+    alt="Logo" 
+    width={40} 
+    height={40} 
+    style={{ borderRadius: "50%" }}
+  />
+
+  <motion.h1
+    className="text-2xl font-bold text-[#FFD369]"
+    initial={{ x: -20 }}
+    animate={{ x: 0 }}
+    transition={{ duration: 0.6, delay: 0.3 }}
+  >
+    ShreeAura
+  </motion.h1>
+</div>
+
             </motion.div>
           ) : (
             <div className="flex-1 mr-4">
