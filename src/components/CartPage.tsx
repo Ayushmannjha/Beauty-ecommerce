@@ -111,7 +111,7 @@ const handleCheckout = async () => {
   quantity: item.quantity
 }));
     const price = getCartTotal();
-
+    console.log("Placing order with products:", products, "and price:", price);
     // Get user's current location
     const getCoordinates = (): Promise<{ latitude: number; longitude: number }> =>
       new Promise((resolve) => {
@@ -132,7 +132,7 @@ const handleCheckout = async () => {
       products,
       address: `${shippingInfo.street}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.country}`,
       pincode: parseInt(shippingInfo.pincode),
-      price,
+      price: total,
       phone: shippingInfo.phone,
       paymentMethod: paymentInfo.type
     };
@@ -151,22 +151,25 @@ const handleCheckout = async () => {
 };
 
 const getLocation = () => {
-  if (!navigator.geolocation) {
-    toast.error("Geolocation is not supported by your browser");
-    return;
+ navigator.geolocation.getCurrentPosition(
+  (position) => {
+    const { latitude, longitude } = position.coords;
+    setCoordinates({ latitude, longitude });
+    toast.success(
+      `Location fetched! Latitude: ${latitude.toFixed(4)}, Longitude: ${longitude.toFixed(4)}`
+    );
+  },
+  (error) => {
+    console.error(error);
+    toast.error("Failed to get location. Please allow location access.");
+  },
+  {
+    enableHighAccuracy: false, // ✅ faster, less battery
+    timeout: 5000,             // ✅ stop waiting after 5s
+    maximumAge: 0              // ✅ always get a fresh position
   }
+);
 
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const { latitude, longitude } = position.coords;
-      setCoordinates({ latitude, longitude });
-      toast.success(`Location fetched! Latitude: ${latitude.toFixed(4)}, Longitude: ${longitude.toFixed(4)}`);
-    },
-    (error) => {
-      console.error(error);
-      toast.error("Failed to get location. Please allow location access.");
-    }
-  );
 };
 
 
@@ -278,11 +281,11 @@ const getLocation = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
                 <div className="flex items-center space-x-2">
                   <span className="text-xl font-bold text-[#FFD369]">
-                    ${item.price.toFixed(2)}
+                    ₹{item.price.toFixed(2)}
                   </span>
                   {item.originalPrice && item.originalPrice > item.price && (
                     <span className="text-sm text-white/50 line-through">
-                      ${item.originalPrice.toFixed(2)}
+                    ₹{item.originalPrice.toFixed(2)}
                     </span>
                   )}
                 </div>
@@ -312,7 +315,7 @@ const getLocation = () => {
                   </div>
 
                   <span className="font-semibold text-white">
-                    ${(item.price * item.quantity).toFixed(2)}
+                   ₹{(item.price * item.quantity).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -401,23 +404,23 @@ const getLocation = () => {
                   <div className="space-y-3">
                     <div className="flex justify-between text-white">
                       <span>Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span>₹{subtotal.toFixed(2)}</span>
                     </div>
                     
                     <div className="flex justify-between text-white">
                       <span>Shipping</span>
-                      <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                      <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
                     </div>
                     
                     <div className="flex justify-between text-white">
                       <span>Tax</span>
-                      <span>${tax.toFixed(2)}</span>
+                      <span>₹{tax.toFixed(2)}</span>
                     </div>
                     
                     {appliedPromo && (
                       <div className="flex justify-between text-green-400">
                         <span>Discount</span>
-                        <span>-${discount.toFixed(2)}</span>
+                        <span>-₹{discount.toFixed(2)}</span>
                       </div>
                     )}
                   </div>
@@ -426,14 +429,14 @@ const getLocation = () => {
 
                   <div className="flex justify-between text-xl font-bold text-[#FFD369]">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>₹{total.toFixed(2)}</span>
                   </div>
 
                   {/* Shipping Info */}
                   {shipping > 0 && (
                     <div className="bg-[#B85C38]/20 border border-[#B85C38]/30 rounded-lg p-3">
                       <p className="text-sm text-[#B85C38]">
-                        Add ${(75 - subtotal).toFixed(2)} more for free shipping!
+                        Add ₹{(75 - subtotal).toFixed(2)} more for free shipping!
                       </p>
                     </div>
                   )}
@@ -535,17 +538,6 @@ const getLocation = () => {
       <span>Cash on Delivery</span>
     </label>
 
-    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF' }}>
-      <input
-        type="radio"
-        name="paymentMethod"
-        value="online"
-        checked={paymentInfo.type === 'online'}
-        onChange={() => setPaymentInfo({ ...paymentInfo, type: 'online' })}
-        style={{ accentColor: '#FFD369' }}
-      />
-      <span>Online Payment</span>
-    </label>
   </div>
 </div>
 

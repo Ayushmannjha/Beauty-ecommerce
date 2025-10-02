@@ -191,7 +191,7 @@ useEffect(() => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/70">Total:</span>
-              <span className="text-xl font-bold text-[#FFD369]">${order.total.toFixed(2)}</span>
+              <span className="text-xl font-bold text-[#FFD369]">₹{order.total.toFixed(2)}</span>
             </div>
           </div>
 
@@ -221,7 +221,7 @@ useEffect(() => {
                         <ImageWithFallback src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md"/>
                         <div className="flex-1">
                           <h5 className="text-white font-medium">{item.name}</h5>
-                          <span className="text-[#FFD369]">${item.price.toFixed(2)}</span>
+                          <span className="text-[#FFD369]">₹{item.price.toFixed(2)}</span>
                           <span className="text-white/70 ml-2">Qty: {item.quantity}</span>
                         </div>
                       </div>

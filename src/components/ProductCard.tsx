@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Star, Heart, ShoppingBag } from "lucide-react";
+import { Star, Heart, ShoppingBag, IndianRupee } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -18,6 +18,7 @@ export interface Product {
   badge?: string;
   inStock?: boolean;
   available?: boolean;
+  imageUrl  ?: string;
 }
 
 export interface ProductCardProps {
@@ -70,7 +71,7 @@ export default function ProductCard({
       {/* Product Image */}
       <div className="relative aspect-square overflow-hidden" onClick={() => onClick?.(product)}>
         <ImageWithFallback
-          src={product.image}
+          src={product.imageUrl || product.image}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
@@ -99,7 +100,7 @@ export default function ProductCard({
         </motion.div>
 
         {/* Out of Stock Overlay */}
-        {!product.inStock && (
+        {!product.available && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <span className="text-white text-xs font-semibold">Out of Stock</span>
           </div>
@@ -128,7 +129,7 @@ export default function ProductCard({
 
         {/* Price */}
         <div className="flex items-center space-x-1">
-          <span className="text-[#FFD369] font-bold text-sm">${product.price.toFixed(2)}</span>
+          <span className="text-[#FFD369] font-bold text-sm"><IndianRupee></IndianRupee>{product.price.toFixed(2)}</span>
           {product.originalPrice && product.originalPrice > product.price && (
             <span className="text-white/50 line-through text-xs">${product.originalPrice.toFixed(2)}</span>
           )}
