@@ -1,11 +1,13 @@
 import  { useState, useEffect, useRef } from 'react';
 import { motion,  useInView, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowRight,  Sparkles,  } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight,    } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Badge } from './ui/badge';
-import { ImageWithFallback } from './figma/ImageWithFallback';
 
+import { ImageWithFallback } from './figma/ImageWithFallback';
+import girlsProduct from "../assets/girlsproducts.png"
+import birthday from "../assets/birthday.jpeg"
+import electronics from "../assets/electronics.png"
 import FeaturedProducts from './Featured';
 import PriceProducts from './PriceProducts';
 import BrandCarousel from './BrandCarsouel';
@@ -32,27 +34,19 @@ const handlePriceClick = (price: number) => {
   const heroSlides = [
     {
       id: 1,
-      title: "New Luxury Collection",
-      subtitle: "Discover Premium Beauty",
-      description: "Elevate your beauty routine with our curated selection of luxury cosmetics",
-      image: "https://images.unsplash.com/photo-1695972235476-c75a4754dc04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjb3NtZXRpY3MlMjBiZWF1dHklMjBwcm9kdWN0c3xlbnwxfHx8fDE3NTc5NDc1Nzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      
+     image: girlsProduct,
       bgColor: "from-[#4B1C3F] via-[#2C1E4A] to-[#1a0f1a]"
     },
     {
       id: 2,
-      title: "Exclusive Fragrance Line",
-      subtitle: "Signature Scents",
-      description: "Indulge in our exclusive collection of luxury perfumes and fragrances",
-      image: "https://images.unsplash.com/photo-1757313202626-8b763ce254a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJmdW1lJTIwZnJhZ3JhbmNlJTIwbHV4dXJ5fGVufDF8fHx8MTc1Nzk0NzU4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      bgColor: "from-[#A30B37] via-[#4B1C3F] to-[#2C1E4A]"
+     image: electronics,
+       bgColor: "from-[#A30B37] via-[#4B1C3F] to-[#2C1E4A]"
     },
     {
       id: 3,
-      title: "Professional Skincare",
-      subtitle: "Science Meets Beauty",
-      description: "Transform your skin with our advanced skincare formulations",
-      image: "https://images.unsplash.com/photo-1665763630810-e6251bdd392d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxza2luY2FyZSUyMHNlcnVtJTIwYm90dGxlc3xlbnwxfHx8fDE3NTc5NDc1ODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      bgColor: "from-[#1C3A2E] via-[#2C1E4A] to-[#4B1C3F]"
+       image: birthday,
+       bgColor: "from-[#1C3A2E] via-[#2C1E4A] to-[#4B1C3F]"
     }
   ];
 
@@ -127,14 +121,25 @@ const pricePlans = [
   return (
     <div className="min-h-screen bg-[#1a0f1a]">
       {/* Hero Banner */}
-      <section className="relative min-h-screen lg:h-screen overflow-hidden">
+      <section
+  style={{
+    position: "relative",
+    minHeight: "40vh",
+    overflow: "hidden",
+  }}
+>
   <AnimatePresence mode="wait">
     {heroSlides.map(
       (slide, index) =>
         index === currentSlide && (
           <motion.div
             key={slide.id}
-            className="absolute inset-0"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -143,39 +148,85 @@ const pricePlans = [
             {/* Background image */}
             <ImageWithFallback
               src={slide.image}
-              alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover"
+              
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
             />
 
-            {/* Overlay gradient */}
+            {/* Gradient overlay */}
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${slide.bgColor} opacity-70`}
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: 0.7,
+              }}
             />
 
-            {/* Content over image */}
-            <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
+            {/* Content */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                height: "100%",
+                maxWidth: "1200px",
+                margin: "0 auto",
+                padding: "0 20px",
+              }}
+            >
               <motion.div
-                className="text-left space-y-6 max-w-2xl"
+                style={{ maxWidth: "600px" }}
                 initial={{ x: -50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
-                <Badge className="bg-[#FFD369] text-[#1a0f1a] border-none text-base lg:text-lg px-4 py-2 flex items-center w-fit">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  {slide.subtitle}
-                </Badge>
+                <div
+                  style={{
+                    backgroundColor: "#FFD369",
+                    color: "#1a0f1a",
+                    padding: "10px 20px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    fontSize: "1rem",
+                    fontWeight: 600,
+                    borderRadius: "25px",
+                    marginBottom: "15px",
+                  }}
+                >
 
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-[#FFD369] leading-tight">
-                  {slide.title}
+                </div>
+
+                <h1
+                  style={{
+                    fontSize: "clamp(2rem, 5vw, 4.5rem)",
+                    fontWeight: "bold",
+                    color: "#370c82ff",
+                    background:"white",
+                    lineHeight: 1.1,
+                    margin: "20px 0 10px 0",
+                    maxWidth: "800px",
+                  }}
+                >
+                  
                 </h1>
 
-                <p className="text-lg lg:text-xl text-white/90 max-w-lg leading-relaxed">
-                  {slide.description}
+                <p
+                  style={{
+                    fontSize: "clamp(1rem, 1.5vw, 1.4rem)",
+                    color: "rgba(255, 255, 255, 0.9)",
+                    maxWidth: "600px",
+                    lineHeight: 1.6,
+                    marginBottom: "30px",
+                  }}
+                >
+                 
                 </p>
-
-                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                  
-                </div>
               </motion.div>
             </div>
           </motion.div>
@@ -184,36 +235,92 @@ const pricePlans = [
   </AnimatePresence>
 
   {/* Navigation buttons */}
-  <Button
-    variant="ghost"
-    size="icon"
-    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-sm text-white hover:bg-[#FFD369] hover:text-[#1a0f1a] w-10 h-10 lg:w-12 lg:h-12 rounded-full"
+  <button
     onClick={prevSlide}
+    style={{
+      position: "absolute",
+      top: "50%",
+      left: "20px",
+      transform: "translateY(-50%)",
+      backgroundColor: "rgba(0,0,0,0.4)",
+      backdropFilter: "blur(6px)",
+      color: "#fff",
+      border: "none",
+      width: "50px",
+      height: "50px",
+      borderRadius: "50%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#FFD369")}
+    onMouseLeave={(e) =>
+      (e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.4)")
+    }
   >
-    <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6" />
-  </Button>
+    <ChevronLeft color="white" />
+  </button>
 
-  <Button
-    variant="ghost"
-    size="icon"
-    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-sm text-white hover:bg-[#FFD369] hover:text-[#1a0f1a] w-10 h-10 lg:w-12 lg:h-12 rounded-full"
+  <button
     onClick={nextSlide}
+    style={{
+      position: "absolute",
+      top: "50%",
+      right: "20px",
+      transform: "translateY(-50%)",
+      backgroundColor: "rgba(0,0,0,0.4)",
+      backdropFilter: "blur(6px)",
+      color: "#fff",
+      border: "none",
+      width: "50px",
+      height: "50px",
+      borderRadius: "50%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#FFD369")}
+    onMouseLeave={(e) =>
+      (e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.4)")
+    }
   >
-    <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6" />
-  </Button>
+    <ChevronRight color="white" />
+  </button>
 
   {/* Dots */}
-  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+  <div
+    style={{
+      position: "absolute",
+      bottom: "30px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      display: "flex",
+      gap: "12px",
+      zIndex: 20,
+    }}
+  >
     {heroSlides.map((_, index) => (
-      <button
+      <div
         key={index}
-        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-          index === currentSlide ? "bg-[#FFD369] scale-125" : "bg-white/40"
-        }`}
         onClick={() => {
           setCurrentSlide(index);
           setIsAutoSliding(false);
           setTimeout(() => setIsAutoSliding(true), 10000);
+        }}
+        style={{
+          width: index === currentSlide ? "14px" : "10px",
+          height: index === currentSlide ? "14px" : "10px",
+          borderRadius: "50%",
+          backgroundColor:
+            index === currentSlide ? "#FFD369" : "rgba(255, 255, 255, 0.4)",
+          boxShadow:
+            index === currentSlide ? "0 0 10px #FFD369" : "none",
+          transition: "all 0.3s ease",
+          cursor: "pointer",
         }}
       />
     ))}
@@ -221,29 +328,32 @@ const pricePlans = [
 </section>
 
 
-      {/* Featured Products */}
-       <FeaturedProducts setCurrentPage={setCurrentPage} />
+
+
+  <FeaturedProducts setCurrentPage={setCurrentPage} />
+
 
       {/* Priced products */}
- <div className="py-16 bg-gray-50">
-      
- <div className="py-16 bg-gray-50">
-        <PriceProducts
-          products={pricePlans}
-          onSelectPrice={handlePriceClick} // <-- callback
-        />
-        {/* Conditionally render SearchPage when selectedPrice is set */}
-      {selectedPrice && (
-        <SearchPage
-          selectedPrice={selectedPrice}
-          setCurrentPage={setCurrentPage}
-          setSelectedProduct={() => {}}
-          onAddToCart={() => {}}
-        />
-      )}
-      </div>
 
-    </div>
+      
+ <div style={{ padding: "1rem", backgroundColor: "#f9fafb02" }}>
+  <PriceProducts
+    products={pricePlans}
+    onSelectPrice={handlePriceClick} // <-- callback
+  />
+  {/* Conditionally render SearchPage when selectedPrice is set */}
+  {selectedPrice && (
+    <SearchPage
+      selectedPrice={selectedPrice}
+      setCurrentPage={setCurrentPage}
+      setSelectedProduct={() => {}}
+      onAddToCart={() => {}}
+    />
+  )}
+</div>
+
+
+
 <div className="w-full min-h-[350px]">
  <BrandCarousel slides={slides} setCurrentPage={setCurrentPage} />
 

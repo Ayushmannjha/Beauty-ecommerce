@@ -37,14 +37,10 @@ export default function App() {
   };
 
   // Optional: store the latest search query locally
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery] = useState("");
 
   // Called by Header search input
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    // ✅ Pass search query as 'name' in currentPage state
-    setCurrentPage("search", { name: query });
-  };
+  
 
   const pageVariants = {
     initial: { opacity: 0, y: 20, scale: 0.98 },
@@ -107,7 +103,7 @@ export default function App() {
             <Header
               currentPage={currentPage.page}
               setCurrentPage={setCurrentPage}
-              onSearch={handleSearch} // ✅ Pass search handler
+              
             />
           )}
 

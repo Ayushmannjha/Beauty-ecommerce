@@ -20,7 +20,7 @@ export default function PriceProducts({ products, onSelectPrice }: PriceProducts
     <div
       style={{
         position: "relative",
-        padding: "60px 20px",
+        padding: "2px 2px",
         textAlign: "center",
         overflow: "hidden",
       }}
@@ -30,7 +30,7 @@ export default function PriceProducts({ products, onSelectPrice }: PriceProducts
         style={{
           position: "absolute",
           top: "10%",
-          left: "15%",
+          left: "5%",
           width: "250px",
           height: "250px",
           borderRadius: "50%",
@@ -43,10 +43,10 @@ export default function PriceProducts({ products, onSelectPrice }: PriceProducts
       <div
         style={{
           position: "absolute",
-          bottom: "15%",
+          bottom: "2%",
           right: "10%",
-          width: "300px",
-          height: "300px",
+          width: "100%",
+          height: "100%",
           borderRadius: "50%",
           background:
             "radial-gradient(circle, rgba(79,70,229,0.4), transparent 70%)",
@@ -55,13 +55,7 @@ export default function PriceProducts({ products, onSelectPrice }: PriceProducts
         }}
       />
 
-      {/* Heading */}
-      <h2 style={{ fontSize: "32px", fontWeight: 800, color: "white", marginBottom: "8px" }}>
-        Choose Your Plan
-      </h2>
-      <p style={{ fontSize: "16px", color: "#a1a1aa", marginBottom: "40px" }}>
-        Start your store instantly with one of our simple pricing options
-      </p>
+    
 
       {/* Cards */}
       <div
@@ -116,7 +110,7 @@ export default function PriceProducts({ products, onSelectPrice }: PriceProducts
                   fontWeight: 600,
                 }}
               >
-                Best Value
+                
               </div>
             )}
 

@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "motion/react";
-import { Search, ShoppingBag, Menu, X, Home } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { useCart } from "../contexts/CartContext";
 
-import {jwtDecode} from "jwt-decode";
+import {
+  Search,
+  ShoppingBag,
+  Store,
+  LogIn,
+  Home,
+} from "lucide-react";
+import { jwtDecode } from "jwt-decode";
+import { useCart } from "../contexts/CartContext";
 import { HomePageApi } from "./services/homepage";
 
 interface HeaderProps {
   currentPage: string;
- setCurrentPage: (
+  setCurrentPage: (
     page: string,
     options?: { category?: string; price?: number; brand?: string; name?: string }
   ) => void;
-  onSearch?: (query: string) => void;
 }
 
 interface TokenPayload {
@@ -28,43 +28,33 @@ interface TokenPayload {
   };
 }
 
-export default function Header({  setCurrentPage }: HeaderProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+export default function Header({ setCurrentPage }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<TokenPayload["User"] | null>(null);
+  const [isSearchFocsed, setIsSearchFocused] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+console.log(isSearchFocsed);
   const { getCartCount } = useCart();
-const handleSearch = async (e: React.FormEvent) => {
-  e.preventDefault();
-  const query = searchQuery.trim();
-  if (!query) return;
 
-  try {
-    // call searchByName API
-    const response = await HomePageApi.searchProductsByName(query);
-    const results = response.data;
-    console.log("Search results:", results);
-
-    // navigate to SearchPage with the search query
-    setCurrentPage("search", { name: query }); // ✅ pass query as 'name' in options
-
-  } catch (err) {
-    console.error("Search API error:", err);
-  }
-};
-
-
- const handleSearchInputKeyPress = (e: React.KeyboardEvent) => {
-  if (e.key === "Enter") {
-    handleSearch(e as any);  // Call handleSearch when Enter is pressed
-  }
-};
-
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) return;
+    try {
+      const response = await HomePageApi.searchProductsByName(query);
+      console.log("Search results:", response.data);
+      setCurrentPage("search", { name: query });
+      setIsSearchFocused(false);
+      setIsMobileSearchOpen(false);
+    } catch (err) {
+      console.error("Search API error:", err);
+    }
+  };
 
   useEffect(() => {
     const tokenString = localStorage.getItem("token");
     if (!tokenString) return;
-
     let jwt = "";
     try {
       const parsed = JSON.parse(tokenString);
@@ -72,7 +62,6 @@ const handleSearch = async (e: React.FormEvent) => {
     } catch {
       jwt = tokenString;
     }
-
     try {
       const decoded: TokenPayload = jwtDecode(jwt);
       setUser(decoded.User);
@@ -81,205 +70,301 @@ const handleSearch = async (e: React.FormEvent) => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth > 768) {
+        setIsMobileSearchOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
     setCurrentPage("home");
   };
 
-  return (
-    <motion.header
-      className="bg-[#4B1C3F]/95 border-b border-[#FFD369]/20 sticky top-0 z-50 backdrop-blur-xl"
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-    >
-      <div className="container mx-auto px-4">
-        {/* Top bar */}
-        <motion.div
-          className="flex items-center justify-between py-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          {/* Logo / Mobile Search */}
-          {!isMobileSearchOpen ? (
-            <motion.div
-              className="flex items-center cursor-pointer flex-shrink-0"
-              onClick={() => setCurrentPage("home")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-          <div className="flex items-center gap-2">
-  <img 
-    src="/श्री  Aura.png" 
-    alt="Logo" 
-    width={40} 
-    height={40} 
-    style={{ borderRadius: "50%" }}
-  />
+  // styles
+  const headerStyle: React.CSSProperties = {
+    backgroundColor: "rgba(75, 28, 63, 0.95)",
+    position: "sticky",
+    top: 0,
+    zIndex: 50,
+    backdropFilter: "blur(10px)",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+    borderBottom: "1px solid rgba(255, 211, 105, 0.2)",
+  };
 
-  <motion.h1
-    className="text-2xl font-bold text-[#FFD369]"
-    initial={{ x: -20 }}
-    animate={{ x: 0 }}
-    transition={{ duration: 0.6, delay: 0.3 }}
-  >
-    ShreeAura
-  </motion.h1>
-</div>
-
-            </motion.div>
-          ) : (
-            <div className="flex-1 mr-4">
-              <div className="relative w-full">
-                <Input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleSearchInputKeyPress}
-                  className="w-full bg-[#2C1E4A]/80 border-[#FFD369]/30 text-white placeholder:text-gray-300 pr-10 py-2 rounded-lg"
-                />
-                <Search
-                  onClick={handleSearch}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#FFD369] w-5 h-5 cursor-pointer"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Desktop Search */}
-          <motion.div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <div className="relative w-full">
-              <Input
-                type="text"
-                placeholder="Search for products, brands..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearchInputKeyPress}
-                className="w-full bg-[#2C1E4A]/80 border-[#FFD369]/30 text-white placeholder:text-gray-300 pr-12 py-3 rounded-lg relative z-10 backdrop-blur-sm"
-              />
-              <div
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                onClick={(e) => handleSearch(e as any)}
-              >
-                <Search className="text-[#FFD369] w-5 h-5" />
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right Icons */}
-          <div className="flex items-center space-x-4">
-            {/* Mobile Search Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden text-[#FFD369] hover:bg-[#2C1E4A]"
-              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-            >
-              {isMobileSearchOpen ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
-            </Button>
-
-            {/* User Avatar / Login */}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-12 w-12 rounded-full p-0">
-                    <Avatar className="h-10 w-10 relative z-10 m-auto">
-                      <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback className="bg-[#FFD369] text-[#1a0f1a]">
-                        {user.name?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-56 bg-[#2C1E4A]/95 border-[#FFD369]/20 backdrop-blur-xl"
-                  align="end"
-                  forceMount
-                >
-                  <DropdownMenuItem onClick={() => setCurrentPage("profile")}>Profile</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setCurrentPage("orders")}>Orders</DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button
-                variant="default"
-                className="bg-[#FFD369] text-[#2C1E4A] font-semibold hover:bg-[#e6c05d]"
-                onClick={() => setCurrentPage("login")}
-              >
-                Login
-              </Button>
-            )}
-
-
-            {/* Cart */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-[#FFD369] hover:bg-[#2C1E4A] relative"
-              onClick={() => setCurrentPage("cart")}
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {getCartCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#A30B37] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                  {getCartCount()}
-                </span>
-              )}
-            </Button>
-
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden text-[#FFD369] hover:bg-[#2C1E4A]"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-          </div>
-        </motion.div>
-
-        {/* Subnavbar - always visible with Home only */}
-       <motion.nav
-  style={{
+  const containerStyle: React.CSSProperties = {
+    maxWidth: "1200px",
+    margin: "0 auto",
     display: "flex",
     alignItems: "center",
-    // dark purple
-    borderTop: "1px solid rgba(255, 211, 105, 0.125)", // light border
-    padding: "0.5rem",
-    width: "100%",
-    justifyContent: "flex-start",
-  }}
-  initial={{ opacity: 0, y: -10 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.4 }}
->
-  <motion.button
-    onClick={() => setCurrentPage("home")}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "0.5rem",
-      color: "white",
-      fontSize: "1rem",
-      cursor: "pointer",
-      border: "none",
-      background: "transparent",
-      padding: "0.25rem 0.5rem",
-      borderRadius: "0.25rem",
-    }}
-    whileHover={{ scale: 1.05, color: "#FFD369" }}
-    whileTap={{ scale: 0.95 }}
-  >
-    <Home style={{ width: "20px", height: "20px", color: "#FFD369" }} />
-    <span>Home</span>
-  </motion.button>
-</motion.nav>
+    justifyContent: "space-between",
+    padding: "12px 16px",
+  };
 
-      </div>
-    </motion.header>
+  const logoStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+    gap: "8px",
+  };
+
+  const logoTextStyle: React.CSSProperties = {
+    fontSize: "24px",
+    fontWeight: "bold",
+    color: "#FFD369",
+  };
+
+  const searchContainerStyle: React.CSSProperties = {
+    flex: 1,
+    maxWidth: "650px",
+    margin: "0 20px",
+    position: "relative",
+    display: isMobile ? "none" : "block",
+  };
+
+  const searchInputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "14px 48px 14px 20px",
+    fontSize: "16px",
+    backgroundColor: "rgba(44, 30, 74, 0.8)",
+    border: "1px solid rgba(255, 211, 105, 0.4)",
+    color: "#fff",
+    borderRadius: "30px",
+    outline: "none",
+  };
+
+  const searchIconStyle: React.CSSProperties = {
+    color: "#FFD369",
+    cursor: "pointer",
+  };
+
+  const mobileSearchContainer: React.CSSProperties = {
+    display: isMobile && isMobileSearchOpen ? "block" : "none",
+    padding: "10px 16px",
+    backgroundColor: "rgba(44, 30, 74, 0.9)",
+    borderTop: "1px solid rgba(255, 211, 105, 0.2)",
+  };
+
+  const mobileSearchInputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "12px 48px 12px 16px",
+    fontSize: "16px",
+    backgroundColor: "rgba(44, 30, 74, 0.8)",
+    border: "1px solid rgba(255, 211, 105, 0.4)",
+    color: "#fff",
+    borderRadius: "30px",
+    outline: "none",
+  };
+
+  const rightSectionStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: "20px",
+  };
+
+  const actionButtonStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    background: "transparent",
+    border: "none",
+    color: "#FFD369",
+    fontSize: "16px",
+    cursor: "pointer",
+    padding: "8px",
+  };
+
+  const subNavStyle: React.CSSProperties = {
+    borderTop: "1px solid rgba(255, 211, 105, 0.2)",
+    padding: "8px 16px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    maxWidth: "1200px",
+    margin: "0 auto",
+  };
+
+  const subNavBtnStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    color: "#FFFFFF",
+    cursor: "pointer",
+    background: "transparent",
+    border: "none",
+    fontSize: "16px",
+  };
+
+  return (
+    <>
+      <header style={headerStyle}>
+        <div style={containerStyle}>
+          {/* Left: Logo */}
+          <div
+            style={logoStyle}
+            onClick={() => setCurrentPage("home")}
+          >
+            <img
+              src="/श्री  Aura.png"
+              alt="Logo"
+              width={42}
+              height={42}
+              style={{ borderRadius: "50%" }}
+            />
+            <span style={logoTextStyle}>ShreeAura</span>
+          </div>
+
+          {/* Center: Search (Desktop) */}
+          <form style={searchContainerStyle} onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Search for products, brands and more"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
+              style={searchInputStyle}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: "16px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "#FFD369",
+                cursor: "pointer",
+              }}
+              onClick={handleSearch as any}
+            >
+              <Search size={22} />
+            </div>
+          </form>
+
+          {/* Right */}
+          <div style={rightSectionStyle}>
+  {isMobile && (
+    <div
+      style={searchIconStyle}
+      onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+    >
+      {isMobileSearchOpen ? (
+        <span style={{ display: "flex", alignItems: "center" }}>
+          ✖
+        </span>
+      ) : (
+        <Search size={22} />
+      )}
+    </div>
+  )}
+  <button
+    style={actionButtonStyle}
+    onClick={() => setCurrentPage("seller")}
+  >
+    <Store size={20} />
+    <span style={{ display: isMobile ? "none" : "inline" }}>
+      Become a Seller
+    </span>
+  </button>
+
+  {!user ? (
+    <button
+      style={actionButtonStyle}
+      onClick={() => setCurrentPage("login")}
+    >
+      <LogIn size={20} />
+      {!isMobile && <span>Login</span>}
+    </button>
+  ) : (
+    <button style={actionButtonStyle} onClick={logout}>
+      <LogIn size={20} />
+      {!isMobile && <span>{user.name}</span>}
+    </button>
+  )}
+
+  <button
+    style={{ ...actionButtonStyle, position: "relative" }}
+    onClick={() => setCurrentPage("cart")}
+  >
+    <ShoppingBag size={20} />
+    {!isMobile && <span>Cart</span>}
+    {getCartCount() > 0 && (
+      <span
+        style={{
+          position: "absolute",
+          top: "0px",
+          right: "-5px",
+          backgroundColor: "#A30B37",
+          color: "white",
+          fontSize: "12px",
+          borderRadius: "50%",
+          width: "20px",
+          height: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontWeight: "bold",
+        }}
+      >
+        {getCartCount()}
+      </span>
+    )}
+  </button>
+</div>
+        </div>
+
+        {/* Mobile Search bar below nav */}
+{isMobile && isMobileSearchOpen && (
+  <form
+    style={{
+      ...mobileSearchContainer,
+      position: "relative", // make sure icon can be positioned absolutely
+    }}
+    onSubmit={handleSearch}
+  >
+    <input
+      type="text"
+      placeholder="Search for products, brands and more"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      style={mobileSearchInputStyle}
+    />
+    <div
+      style={{
+        position: "absolute",
+        right: "12px",
+        top: "50%",
+        transform: "translateY(-50%)", // centers the icon vertically
+        color: "#FFD369",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%", // ensures it matches the input height
+      }}
+      onClick={handleSearch as any}
+    >
+      <Search size={20} />
+    </div>
+  </form>
+)}
+
+        {/* Sub Nav */}
+        <div style={subNavStyle}>
+          <button
+            style={subNavBtnStyle}
+            onClick={() => setCurrentPage("home")}
+          >
+            <Home size={20} color="#FFD369" />
+            <span>Home</span>
+          </button>
+        </div>
+      </header>
+    </>
   );
 }
