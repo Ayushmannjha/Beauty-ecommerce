@@ -188,17 +188,19 @@ export default function Header({ setCurrentPage }: HeaderProps) {
   };
 
   const dropdownStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "50px",
-    right: 0,
-    background: "rgba(33, 21, 57, 0.98)",
-    border: "1px solid rgba(255, 211, 105, 0.3)",
-    borderRadius: "12px",
-    overflow: "hidden",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-    display: showDropdown ? "block" : "none",
-    minWidth: "180px",
-  };
+  position: "absolute",
+  top: "50px",
+  right: 0,
+  background: "rgba(33, 21, 57, 0.98)",
+  border: "1px solid rgba(255, 211, 105, 0.3)",
+  borderRadius: "12px",
+  overflow: "hidden",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+  display: showDropdown ? "block" : "none",
+  minWidth: "180px",
+  zIndex: 2000,   // 👈 this line is key
+};
+
 
   const dropdownItemStyle: React.CSSProperties = {
     padding: "12px 16px",
