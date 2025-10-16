@@ -131,7 +131,7 @@ export default function Header({ setCurrentPage }: HeaderProps) {
     backgroundColor: "rgba(44, 30, 74, 0.8)",
     border: "1px solid rgba(255, 211, 105, 0.4)",
     color: "#fff",
-    borderRadius: "50px",
+    borderRadius: "15px",
     outline: "none",
     transition: "0.3s",
   };
@@ -149,7 +149,7 @@ export default function Header({ setCurrentPage }: HeaderProps) {
     backgroundColor: "rgba(33, 21, 57, 0.95)",
     border: "1px solid rgba(255, 211, 105, 0.3)",
     color: "#FFD369",
-    borderRadius: "50px",
+    borderRadius: "15px",
     outline: "none",
     boxShadow: "0 0 10px rgba(255, 211, 105, 0.05) inset",
     transition: "all 0.2s ease",
