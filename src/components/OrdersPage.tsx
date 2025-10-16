@@ -33,6 +33,7 @@ export interface OrderItem {
   price: number;
   quantity: number;
   image: string;
+  imageUrl ?: string;
 }
 
 export interface ShippingAddress {
@@ -218,7 +219,7 @@ useEffect(() => {
                   <div className="space-y-4">
                     {selectedOrder.items.map((item, idx) => (
                       <div key={idx} className="flex items-center space-x-4 p-3 bg-[#1a0f1a] rounded-lg">
-                        <ImageWithFallback src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md"/>
+                        <ImageWithFallback src={item.imageUrl} alt={item.name} className="w-16 h-16 object-cover rounded-md"/>
                         <div className="flex-1">
                           <h5 className="text-white font-medium">{item.name}</h5>
                           <span className="text-[#FFD369]">₹{item.price.toFixed(2)}</span>

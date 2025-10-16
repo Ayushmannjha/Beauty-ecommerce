@@ -1,8 +1,7 @@
-import  { useState, useEffect, useRef } from 'react';
-import { motion,  useInView, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, ArrowRight,    } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card, CardContent } from './ui/card';
+import  { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ChevronLeft, ChevronRight,    } from 'lucide-react';
+
 
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import girlsProduct from "../assets/girlsproducts.png"
@@ -10,11 +9,10 @@ import birthday from "../assets/birthday.jpeg"
 import electronics from "../assets/electronics.png"
 import FeaturedProducts from './Featured';
 import PriceProducts from './PriceProducts';
-import BrandCarousel from './BrandCarsouel';
-import nykaa from "../assets/nykaa.png";
-import sugar from "../assets/sugar.png";
-import cetaphil from "../assets/cetaphil.jpg";
+
 import SearchPage from './SearchPage';
+import ShopByName from './ShopByName';
+import BlogPage from './BlogPage';
 interface HomePageProps {
   setCurrentPage: (
     page: string,
@@ -53,23 +51,7 @@ const handlePriceClick = (price: number) => {
 
   
 
-const slides = [
-  {
-    image: nykaa, // Maybelline product
-    title: "Nykaa",
-    subtitle: "Shop Latest Makeup",
-  },
-  {
-    image: sugar, // Nykaa product
-    title: "Sugar",
-    subtitle: "Up to 30% OFF",
-  },
-  {
-    image: cetaphil, // Maybelline product
-    title: "Ceptaphil",
-    subtitle: "Limited Stock!",
-  },
-];
+
 const pricePlans = [
     { id: 1, price: 99, subtitle: "STORE", note: "LIVE NOW" },
     { id: 2, price: 199, subtitle: "STORE", note: "LIVE NOW" },
@@ -100,31 +82,13 @@ const pricePlans = [
     setTimeout(() => setIsAutoSliding(true), 10000);
   };
 
-  // Section component with intersection observer
- const AnimatedSection = ({ children, className = "", delay = 0 }: any) => {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-    return (
-      <motion.section
-        ref={ref}
-        className={className}
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-        transition={{ duration: 0.6, delay }}
-      >
-        {children}
-      </motion.section>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-[#1a0f1a]">
       {/* Hero Banner */}
       <section
   style={{
     position: "relative",
-    minHeight: "40vh",
+    minHeight: "50vh",
     overflow: "hidden",
   }}
 >
@@ -344,7 +308,7 @@ const pricePlans = [
   {/* Conditionally render SearchPage when selectedPrice is set */}
   {selectedPrice && (
     <SearchPage
-      selectedPrice={selectedPrice}
+      
       setCurrentPage={setCurrentPage}
       setSelectedProduct={() => {}}
       onAddToCart={() => {}}
@@ -352,76 +316,9 @@ const pricePlans = [
   )}
 </div>
 
+<ShopByName setCurrentPage={setCurrentPage as (page: string, options?: { name?: string }) => void} />
 
-
-<div className="w-full min-h-[350px]">
- <BrandCarousel slides={slides} setCurrentPage={setCurrentPage} />
-
-</div>
-
-     
-
-     
-      
-      {/* Blog Section */}
-      <AnimatedSection className="py-16 lg:py-20 bg-[#1C3A2E]" delay={1}>
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-[#FFD369] mb-4 lg:mb-6">Beauty Blog</h2>
-            <p className="text-lg lg:text-xl text-white/80">Latest trends, tips, and tutorials</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {[
-              {
-                title: "Summer Makeup Trends 2025",
-                excerpt: "Discover the hottest makeup looks for the summer season",
-                image: "https://images.unsplash.com/photo-1688953228417-8ec4007eb532?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZWF1dHklMjBicmFuZCUyMGNvc21ldGljc3xlbnwxfHx8fDE3NTc5NDc1ODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-                date: "Dec 15, 2024"
-              },
-              {
-                title: "Skincare Routine Guide",
-                excerpt: "Build the perfect skincare routine for your skin type",
-                image: "https://images.unsplash.com/photo-1665763630810-e6251bdd392d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxza2luY2FyZSUyMHNlcnVtJTIwYm90dGxlc3xlbnwxfHx8fDE3NTc5NDc1ODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-                date: "Dec 12, 2024"
-              },
-              {
-                title: "Fragrance Layering Tips",
-                excerpt: "Learn how to layer fragrances like a professional",
-                image: "https://images.unsplash.com/photo-1757313202626-8b763ce254a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJmdW1lJTIwZnJhZ3JhbmNlJTIwbHV4dXJ5fGVufDF8fHx8MTc1Nzk0NzU4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-                date: "Dec 10, 2024"
-              }
-            ].map((post, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <Card className="bg-[#4B1C3F] border-[#FFD369]/20 overflow-hidden hover:border-[#FFD369] transition-all duration-300">
-                  <div className="overflow-hidden">
-                    <ImageWithFallback
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <CardContent className="p-4 lg:p-6">
-                    <p className="text-sm text-[#FFD369] mb-2">{post.date}</p>
-                    <h3 className="font-bold text-white text-lg mb-3">{post.title}</h3>
-                    <p className="text-white/80 mb-4 text-sm lg:text-base">{post.excerpt}</p>
-                    <Button variant="ghost" className="text-[#FFD369] hover:text-white p-0">
-                      Read More <ArrowRight className="ml-1 w-4 h-4" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </AnimatedSection>
+<BlogPage></BlogPage>
     </div>
   );
 }

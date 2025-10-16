@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
-
-import {
-  Search,
-  ShoppingBag,
-  Store,
-  LogIn,
-  Home,
-} from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { Search, ShoppingBag, Store, LogIn, User } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useCart } from "../contexts/CartContext";
 import { HomePageApi } from "./services/homepage";
@@ -31,10 +24,9 @@ interface TokenPayload {
 export default function Header({ setCurrentPage }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<TokenPayload["User"] | null>(null);
-  const [isSearchFocsed, setIsSearchFocused] = useState(false);
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-console.log(isSearchFocsed);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { getCartCount } = useCart();
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -45,8 +37,6 @@ console.log(isSearchFocsed);
       const response = await HomePageApi.searchProductsByName(query);
       console.log("Search results:", response.data);
       setCurrentPage("search", { name: query });
-      setIsSearchFocused(false);
-      setIsMobileSearchOpen(false);
     } catch (err) {
       console.error("Search API error:", err);
     }
@@ -71,14 +61,20 @@ console.log(isSearchFocsed);
   }, []);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      if (window.innerWidth > 768) {
-        setIsMobileSearchOpen(false);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
       }
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const logout = () => {
@@ -87,7 +83,7 @@ console.log(isSearchFocsed);
     setCurrentPage("home");
   };
 
-  // styles
+  // ================= STYLES =================
   const headerStyle: React.CSSProperties = {
     backgroundColor: "rgba(75, 28, 63, 0.95)",
     position: "sticky",
@@ -135,37 +131,48 @@ console.log(isSearchFocsed);
     backgroundColor: "rgba(44, 30, 74, 0.8)",
     border: "1px solid rgba(255, 211, 105, 0.4)",
     color: "#fff",
-    borderRadius: "30px",
+    borderRadius: "50px",
     outline: "none",
-  };
-
-  const searchIconStyle: React.CSSProperties = {
-    color: "#FFD369",
-    cursor: "pointer",
+    transition: "0.3s",
   };
 
   const mobileSearchContainer: React.CSSProperties = {
-    display: isMobile && isMobileSearchOpen ? "block" : "none",
+    display: isMobile ? "block" : "none",
     padding: "10px 16px",
-    backgroundColor: "rgba(44, 30, 74, 0.9)",
-    borderTop: "1px solid rgba(255, 211, 105, 0.2)",
+    backgroundColor: "rgba(75, 28, 63, 0.95)",
   };
 
   const mobileSearchInputStyle: React.CSSProperties = {
     width: "100%",
-    padding: "12px 48px 12px 16px",
+    padding: "12px 48px 12px 20px",
     fontSize: "16px",
-    backgroundColor: "rgba(44, 30, 74, 0.8)",
-    border: "1px solid rgba(255, 211, 105, 0.4)",
-    color: "#fff",
-    borderRadius: "30px",
+    backgroundColor: "rgba(33, 21, 57, 0.95)",
+    border: "1px solid rgba(255, 211, 105, 0.3)",
+    color: "#FFD369",
+    borderRadius: "50px",
     outline: "none",
+    boxShadow: "0 0 10px rgba(255, 211, 105, 0.05) inset",
+    transition: "all 0.2s ease",
+  };
+
+  const mobileSearchIconStyle: React.CSSProperties = {
+    position: "absolute",
+    right: "20px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: "#FFD369",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    opacity: 0.8,
   };
 
   const rightSectionStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
     gap: "20px",
+    position: "relative",
   };
 
   const actionButtonStyle: React.CSSProperties = {
@@ -180,36 +187,44 @@ console.log(isSearchFocsed);
     padding: "8px",
   };
 
-  const subNavStyle: React.CSSProperties = {
-    borderTop: "1px solid rgba(255, 211, 105, 0.2)",
-    padding: "8px 16px",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    maxWidth: "1200px",
-    margin: "0 auto",
+  const dropdownStyle: React.CSSProperties = {
+    position: "absolute",
+    top: "50px",
+    right: 0,
+    background: "rgba(33, 21, 57, 0.98)",
+    border: "1px solid rgba(255, 211, 105, 0.3)",
+    borderRadius: "12px",
+    overflow: "hidden",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+    display: showDropdown ? "block" : "none",
+    minWidth: "180px",
   };
 
-  const subNavBtnStyle: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    color: "#FFFFFF",
+  const dropdownItemStyle: React.CSSProperties = {
+    padding: "12px 16px",
+    color: "#FFD369",
     cursor: "pointer",
+    fontSize: "15px",
     background: "transparent",
     border: "none",
-    fontSize: "16px",
+    textAlign: "left",
+    width: "100%",
   };
 
+  const dropdownItemHover = (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e.target as HTMLElement).style.background = "rgba(255, 211, 105, 0.15)";
+  };
+  const dropdownItemLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e.target as HTMLElement).style.background = "transparent";
+  };
+
+  // ================== RENDER ==================
   return (
     <>
       <header style={headerStyle}>
         <div style={containerStyle}>
-          {/* Left: Logo */}
-          <div
-            style={logoStyle}
-            onClick={() => setCurrentPage("home")}
-          >
+          {/* Logo */}
+          <div style={logoStyle} onClick={() => setCurrentPage("home")}>
             <img
               src="/श्री  Aura.png"
               alt="Logo"
@@ -220,15 +235,13 @@ console.log(isSearchFocsed);
             <span style={logoTextStyle}>ShreeAura</span>
           </div>
 
-          {/* Center: Search (Desktop) */}
+          {/* Search */}
           <form style={searchContainerStyle} onSubmit={handleSearch}>
             <input
               type="text"
-              placeholder="Search for products, brands and more"
+              placeholder="Search for products"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
               style={searchInputStyle}
             />
             <div
@@ -246,124 +259,111 @@ console.log(isSearchFocsed);
             </div>
           </form>
 
-          {/* Right */}
+          {/* Right section */}
           <div style={rightSectionStyle}>
-  {isMobile && (
-    <div
-      style={searchIconStyle}
-      onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-    >
-      {isMobileSearchOpen ? (
-        <span style={{ display: "flex", alignItems: "center" }}>
-          ✖
-        </span>
-      ) : (
-        <Search size={22} />
-      )}
-    </div>
-  )}
-  <button
-    style={actionButtonStyle}
-    onClick={() => setCurrentPage("seller")}
-  >
-    <Store size={20} />
-    <span style={{ display: isMobile ? "none" : "inline" }}>
-      Become a Seller
-    </span>
-  </button>
+            <button
+              style={actionButtonStyle}
+              onClick={() => setCurrentPage("seller")}
+            >
+              <Store size={20} />
+              {!isMobile && <span>Become a Seller</span>}
+            </button>
 
-  {!user ? (
-    <button
-      style={actionButtonStyle}
-      onClick={() => setCurrentPage("login")}
-    >
-      <LogIn size={20} />
-      {!isMobile && <span>Login</span>}
-    </button>
-  ) : (
-    <button style={actionButtonStyle} onClick={logout}>
-      <LogIn size={20} />
-      {!isMobile && <span>{user.name}</span>}
-    </button>
-  )}
+            {!user ? (
+              <button
+                style={actionButtonStyle}
+                onClick={() => setCurrentPage("login")}
+              >
+                <LogIn size={20} />
+                {!isMobile && <span>Login</span>}
+              </button>
+            ) : (
+              <div style={{ position: "relative" }} ref={dropdownRef}>
+                <button
+                  style={actionButtonStyle}
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                >
+                  <User size={20} />
+                  {!isMobile && <span>{user.name}</span>}
+                </button>
+                <div style={dropdownStyle}>
+                  <button
+                    style={dropdownItemStyle}
+                    onMouseEnter={dropdownItemHover}
+                    onMouseLeave={dropdownItemLeave}
+                    onClick={() => setCurrentPage("profile")}
+                  >
+                    Profile
+                  </button>
+                  <button
+                    style={dropdownItemStyle}
+                    onMouseEnter={dropdownItemHover}
+                    onMouseLeave={dropdownItemLeave}
+                    onClick={() => setCurrentPage("orders")}
+                  >
+                    My Orders
+                  </button>
+                  <button
+                    style={dropdownItemStyle}
+                    onMouseEnter={dropdownItemHover}
+                    onMouseLeave={dropdownItemLeave}
+                    onClick={logout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
 
-  <button
-    style={{ ...actionButtonStyle, position: "relative" }}
-    onClick={() => setCurrentPage("cart")}
-  >
-    <ShoppingBag size={20} />
-    {!isMobile && <span>Cart</span>}
-    {getCartCount() > 0 && (
-      <span
-        style={{
-          position: "absolute",
-          top: "0px",
-          right: "-5px",
-          backgroundColor: "#A30B37",
-          color: "white",
-          fontSize: "12px",
-          borderRadius: "50%",
-          width: "20px",
-          height: "20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          fontWeight: "bold",
-        }}
-      >
-        {getCartCount()}
-      </span>
-    )}
-  </button>
-</div>
+            <button
+              style={{ ...actionButtonStyle, position: "relative" }}
+              onClick={() => setCurrentPage("cart")}
+            >
+              <ShoppingBag size={20} />
+              {!isMobile && <span>Cart</span>}
+              {getCartCount() > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "0px",
+                    right: "-5px",
+                    backgroundColor: "#A30B37",
+                    color: "white",
+                    fontSize: "12px",
+                    borderRadius: "50%",
+                    width: "20px",
+                    height: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {getCartCount()}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Search bar below nav */}
-{isMobile && isMobileSearchOpen && (
-  <form
-    style={{
-      ...mobileSearchContainer,
-      position: "relative", // make sure icon can be positioned absolutely
-    }}
-    onSubmit={handleSearch}
-  >
-    <input
-      type="text"
-      placeholder="Search for products, brands and more"
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      style={mobileSearchInputStyle}
-    />
-    <div
-      style={{
-        position: "absolute",
-        right: "12px",
-        top: "50%",
-        transform: "translateY(-50%)", // centers the icon vertically
-        color: "#FFD369",
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100%", // ensures it matches the input height
-      }}
-      onClick={handleSearch as any}
-    >
-      <Search size={20} />
-    </div>
-  </form>
-)}
-
-        {/* Sub Nav */}
-        <div style={subNavStyle}>
-          <button
-            style={subNavBtnStyle}
-            onClick={() => setCurrentPage("home")}
+        {/* Mobile search bar */}
+        {isMobile && (
+          <form
+            style={{ ...mobileSearchContainer, position: "relative" }}
+            onSubmit={handleSearch}
           >
-            <Home size={20} color="#FFD369" />
-            <span>Home</span>
-          </button>
-        </div>
+            <input
+              type="text"
+              placeholder="Search for products"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={mobileSearchInputStyle}
+            />
+            <div style={mobileSearchIconStyle} onClick={handleSearch as any}>
+              <Search size={20} />
+            </div>
+          </form>
+        )}
       </header>
     </>
   );

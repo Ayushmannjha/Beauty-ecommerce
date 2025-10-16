@@ -16,9 +16,10 @@ export interface Product {
   rating: number;      // REQUIRED
   reviews: number;     // REQUIRED
   badge?: string;
-  inStock?: boolean;
+  stock?: number;
   available?: boolean;
   imageUrl  ?: string;
+  category?: string;
 }
 
 export interface ProductCardProps {
@@ -134,14 +135,14 @@ export default function ProductCard({
             <span className="text-white/50 line-through text-xs">${product.originalPrice.toFixed(2)}</span>
           )}
         </div>
-
+         
         {/* Add to Cart / Go to Cart Button */}
         <Button
           className="w-full bg-[#FFD369] text-[#1a0f1a] hover:bg-[#FFD369]/90 py-2 text-xs font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-[#FFD369]/30"
-          disabled={product.inStock === false}
+          disabled={product.stock === 0}
           onClick={handleAddToCart}
         >
-          {product.inStock === false
+          {product.stock === 0
             ? 'Notify Me'
             : <>
                 <ShoppingBag className="w-3 h-3 mr-1" />

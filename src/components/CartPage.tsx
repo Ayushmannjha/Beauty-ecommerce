@@ -1,6 +1,6 @@
 import  { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trash2, Plus, Minus, Heart, ShoppingBag, Tag, Truck, CreditCard, Shield, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Trash2, Plus, Minus, Heart, ShoppingBag, Tag, Truck, CreditCard, Shield, CheckCircle, ArrowLeft, IndianRupee } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
@@ -263,7 +263,7 @@ const getLocation = () => {
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
             <div className="flex-shrink-0">
               <ImageWithFallback
-                src={item.image}
+                src={item.imageUrl}
                 alt={item.name}
                 className="w-full sm:w-24 h-32 sm:h-24 object-cover rounded-lg"
               />
@@ -273,7 +273,7 @@ const getLocation = () => {
               <div>
                 {item.brand && <p className="text-sm text-[#FFD369]">{item.brand}</p>}
                 <h3 className="font-semibold text-white text-lg">{item.name}</h3>
-                {!item.inStock && (
+                {!item.stock && (
                   <p className="text-sm text-red-400 font-medium">Currently out of stock</p>
                 )}
               </div>
@@ -547,7 +547,7 @@ const getLocation = () => {
                           <div className="space-y-2 text-sm">
                             <div className="flex justify-between">
                               <span className="text-white/70">Subtotal:</span>
-                              <span className="text-white">${subtotal.toFixed(2)}</span>
+                              <span className="text-white"><IndianRupee/>{subtotal.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-white/70">Shipping:</span>
@@ -555,18 +555,18 @@ const getLocation = () => {
                             </div>
                             <div className="flex justify-between">
                               <span className="text-white/70">Tax:</span>
-                              <span className="text-white">${tax.toFixed(2)}</span>
+                              <span className="text-white"><IndianRupee/>{tax.toFixed(2)}</span>
                             </div>
                             {appliedPromo && (
                               <div className="flex justify-between">
                                 <span className="text-green-400">Discount:</span>
-                                <span className="text-green-400">-${discount.toFixed(2)}</span>
+                                <span className="text-green-400">-<IndianRupee/>{discount.toFixed(2)}</span>
                               </div>
                             )}
                             <div className="border-t border-[#FFD369]/20 pt-2">
                               <div className="flex justify-between font-bold">
                                 <span className="text-white">Total:</span>
-                                <span className="text-[#FFD369]">${total.toFixed(2)}</span>
+                                <span className="text-[#FFD369]"><IndianRupee/>{total.toFixed(2)}</span>
                               </div>
                             </div>
                           </div>

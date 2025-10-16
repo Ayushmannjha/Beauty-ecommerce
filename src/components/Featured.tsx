@@ -1,10 +1,14 @@
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import lipstick from "../assets/lipstick.jpeg"
+import rings from "../assets/rings.jpeg"
 import skincare from "../assets/skinCare.jpeg"
 import bangles from "../assets/bangles.jpeg"
-import kitchen from "../assets/kitchen.jpeg"
+
 import home from "../assets/homedecor.jpeg"
+import electronics from "../assets/electronics.png"
+import earing from "../assets/Earing.jpeg"
+import birthday from "../assets/birthday.jpeg"  
+import hair from "../assets/Hair_accesories.jpg"
 interface FeaturedProductsProps {
   setCurrentPage: (page: string, options?: { category?: string }) => void;
 }
@@ -90,12 +94,14 @@ const CategoryCard = ({ category, onClick }: any) => (
 
 export default function ShopByCategory({ setCurrentPage }: FeaturedProductsProps) {
   const categories = [
-    { id: 1, name: "Lipsticks", image: lipstick },
-    { id: 2, name: "Skin Care", image: skincare },
+    { id: 1, name: "earing", image: earing },
+    { id: 2, name: "Skincare", image: skincare },
     { id: 3, name: "Bangles", image: bangles },
-    { id: 4, name: "Kitchen Essential", image: kitchen },
+    { id: 4, name: "Rings", image: rings },
     { id: 5, name: "Home decorative items", image: home },
-    { id: 6, name: "Glosses", image: "https://images.unsplash.com/photo-1612817159949-b4030f2d17ab" },
+    { id: 6, name: "Hair accesories", image: hair },
+    { id: 7, name: "Birthday Party items", image: birthday },
+    { id: 8, name: "Electronics", image: electronics },
   ];
 
   return (
