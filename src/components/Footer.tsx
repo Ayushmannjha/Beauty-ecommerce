@@ -71,15 +71,15 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="flex items-center space-x-2">
               <Phone className="w-4 h-4" />
-              <span>+1 (555) 123-4567</span>
+              <span>+918544090329</span>
             </div>
             <div className="flex items-center space-x-2">
               <Mail className="w-4 h-4" />
-              <span>hello@luxebeauty.com</span>
+              <span>Shreeaura.fashion@gmail.com</span>
             </div>
             <div className="flex items-center space-x-2">
               <MapPin className="w-4 h-4" />
-              <span>123 Beauty Street, NY 10001</span>
+              <span>Maurya Lok complex, Dak Bangla Chauraha</span>
             </div>
           </div>
         </div>
@@ -90,24 +90,10 @@ export default function Footer() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <div className="text-sm text-[#FFD369]/80">
-              © 2025 LuxeBeauty. All rights reserved.
+              © 2025 Shreeaura.in. All rights reserved.
             </div>
             
-            {/* Payment Methods */}
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-[#FFD369]/80">We Accept:</span>
-              <div className="flex space-x-2">
-                <div className="w-8 h-5 bg-[#FFD369] rounded text-xs flex items-center justify-center text-[#4B1C3F] font-semibold">
-                  VISA
-                </div>
-                <div className="w-8 h-5 bg-[#FFD369] rounded text-xs flex items-center justify-center text-[#4B1C3F] font-semibold">
-                  MC
-                </div>
-                <div className="w-8 h-5 bg-[#FFD369] rounded text-xs flex items-center justify-center text-[#4B1C3F] font-semibold">
-                  AMEX
-                </div>
-              </div>
-            </div>
+            
 
             <div className="flex space-x-4 text-sm">
               <a href="#" className="text-[#FFD369]/80 hover:text-white transition-colors">Privacy Policy</a>
