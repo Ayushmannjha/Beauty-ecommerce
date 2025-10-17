@@ -10,7 +10,7 @@ import electronics from "../assets/electronics.png";
 import earing from "../assets/Earing.jpeg";
 import birthday from "../assets/birthday.jpeg";
 import hair from "../assets/Hair_accesories.jpg";
-import stationary from "../assets/stationary.jpeg";
+import stationary from "../assets/Stationary.jpeg";
 import makeup from "../assets/Makeupessentials.jpeg";
 
 interface FeaturedProductsProps {
