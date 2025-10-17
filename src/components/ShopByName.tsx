@@ -1,7 +1,7 @@
 import { motion, useInView } from "motion/react";
 import { useRef, useState } from "react";
 import scrunchies from "../assets/srunchies.jpeg";
-import nosepin from "../assets/nosepin.jpg";
+import nosepin from "../assets/nosepins.jpeg";
 import clutcher from "../assets/Clutcher.jpg";
 import napkins from "../assets/Synatry napkins.jpg"
 interface FeaturedProductsProps {
@@ -44,10 +44,8 @@ export default function ShopByName({ setCurrentPage }: FeaturedProductsProps) {
     { name: "Scrunchies", image: scrunchies },
     { name: "Nosepin", image: nosepin },
     { name: "Clutcher", image: clutcher },
-    { name: "Synatry napkins", image: napkins },
-    { name: "Bangle", image: "/assets/bangles.jpeg" },
-    { name: "Fragrance", image: "/assets/fragrance.jpeg" },
-    { name: "Kitchen Essential", image: "/assets/kitchen.jpeg" },
+    { name: "sanitary napkins", image: napkins },
+
   ];
 
   const handleSearch = (query?: string) => {
