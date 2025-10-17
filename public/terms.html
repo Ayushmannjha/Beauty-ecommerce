@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ShreeAura — Terms of Service</title>
+  <meta name="description" content="Terms of Service for ShreeAura Private Limited" />
+  <style>
+    :root{
+      --bg: #fbfbfd;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #7c3aed;
+      --border: #e6e9ee;
+      --maxw: 900px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color-scheme: light;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg, #f7f8fb 0%, var(--bg) 100%);
+      font-size:16px;
+      line-height:1.55;
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    header{
+      background:transparent;
+      padding:28px 20px;
+      border-bottom:1px solid var(--border);
+    }
+    .container{
+      max-width:var(--maxw);
+      margin:28px auto;
+      padding:0 20px 60px;
+    }
+    .hero{
+      display:flex;
+      gap:18px;
+      align-items:flex-start;
+      margin-bottom:20px;
+    }
+    .brand{
+      width:68px;
+      height:68px;
+      flex:0 0 68px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#ede9fe,#eef2ff);
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      color:var(--accent);
+      font-size:20px;
+      border:1px solid var(--border);
+    }
+    .title{
+      margin:0;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:18px;
+      box-shadow: 0 6px 18px rgba(16,24,40,0.03);
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap:20px;
+    }
+
+    nav.toc{
+      position:sticky;
+      top:20px;
+      align-self:start;
+      padding:12px;
+      max-height:70vh;
+      overflow:auto;
+    }
+    nav.toc h3{margin:0 0 8px 0;font-size:14px;color:var(--muted)}
+    nav.toc a{
+      display:block;
+      padding:8px;
+      border-radius:8px;
+      text-decoration:none;
+      color: #0f172a;
+      font-size:14px;
+    }
+    nav.toc a:hover{background:#fbf8ff;color:var(--accent)}
+    article.terms{padding:12px}
+    article.terms h2{margin-top:22px}
+    .section-meta{font-size:14px;color:var(--muted);margin-bottom:8px}
+    .notice{
+      display:block;
+      background:#fffbeb;
+      border:1px solid #fef3c7;
+      padding:10px;
+      border-radius:8px;
+      margin-bottom:12px;
+      color:#a16207;
+    }
+
+    .footer{
+      margin-top:28px;
+      padding-top:18px;
+      border-top:1px dashed var(--border);
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    /* Collapsible summary style */
+    details{margin-bottom:8px}
+    summary{cursor:pointer; font-weight:600}
+    summary::-webkit-details-marker{display:none}
+    summary:after{content:'▸';float:right;transform-origin:center;transition:transform .18s ease}
+    details[open] summary:after{transform:rotate(90deg)}
+
+    /* print friendly */
+    @media print{
+      body{background:white}
+      nav.toc{display:none}
+      .layout{grid-template-columns:1fr}
+    }
+
+    /* responsive */
+    @media (max-width:900px){
+      .layout{grid-template-columns:1fr; gap:14px}
+      nav.toc{position:static;display:flex;overflow:auto;padding-bottom:6px}
+      nav.toc a{white-space:nowrap}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;align-items:center;gap:14px">
+      <div class="brand" aria-hidden="true">SA</div>
+      <div>
+        <h1 class="title" style="font-size:20px;margin:0">ShreeAura — Terms of Service</h1>
+        <div class="meta">ShreeAura Private Limited — Last updated: October 17, 2025</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card hero" style="flex-direction:column">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%">
+        <div>
+          <strong style="font-size:16px">Welcome — Please read carefully</strong>
+          <div class="section-meta">These Terms govern your access to and use of the ShreeAura website (www.shreeaura.com) and related apps.</div>
+        </div>
+        <div style="text-align:right">
+          <small style="color:var(--muted)">Country: India</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout" style="margin-top:18px">
+      <nav class="toc card" aria-label="Table of contents">
+        <h3>Contents</h3>
+        <a href="#acceptance">I. Acceptance of Terms</a>
+        <a href="#definitions">II. Definitions</a>
+        <a href="#eligibility">III. Eligibility to Use the Services</a>
+        <a href="#provision">IV. Provision of Services</a>
+        <a href="#changes">IV. Changes to the Terms</a>
+        <a href="#license-platform">VI. Your License to Use the Platform</a>
+        <a href="#license-content">VII. License to Your Content</a>
+        <a href="#content-responsibilities">VIII. Content Responsibilities & Removal</a>
+        <a href="#thirdparty">IX. Third-Party Content & Links</a>
+        <a href="#account-security">X. Customer Account & Security</a>
+        <a href="#communication">XI. Communication</a>
+        <a href="#pricing">XII. Pricing, Payments & Refunds</a>
+        <a href="#disclaimers">XIII. Disclaimers & Limitation of Liability</a>
+        <a href="#governance">XV. Governing Law & Dispute Resolution</a>
+        <a href="#misc">XVI. Miscellaneous</a>
+        <a href="#privacy">XVII. Privacy Policy</a>
+      </nav>
+
+      <article class="terms card" id="terms">
+        <div class="notice" role="note">
+          These Terms are a legally binding agreement. If you do not agree, please refrain from using the Platform.
+        </div>
+
+        <section id="acceptance">
+          <h2>I. Acceptance of Terms</h2>
+          <p>By accessing or using the ShreeAura website (<a href="https://www.shreeaura.com" target="_blank" rel="noopener">www.shreeaura.com</a>) or any related mobile or software applications (collectively, the “Platform”), you agree to these Terms of Service (“Terms”) and enter into a legally binding agreement with ShreeAura Private Limited (“ShreeAura”, “we”, “us”, or “our”).</p>
+          <p>If you do not agree to these Terms, please refrain from using the Platform or its services.</p>
+        </section>
+
+        <section id="definitions">
+          <h2>II. Definitions</h2>
+          <p><strong>“Customer” / “You”</strong> – refers to any user, visitor, or buyer using the Platform.</p>
+          <p><strong>“Content”</strong> – includes, but is not limited to, reviews, images, comments, feedback, or any data you submit or upload to the Platform (“Your Content”).</p>
+          <p><strong>“SA Content”</strong> – refers to content created and owned by ShreeAura, including text, images, product listings, design, graphics, and software.</p>
+        </section>
+
+        <section id="eligibility">
+          <h2>III. Eligibility to Use the Services</h2>
+          <p>You must be at least 18 years old and capable of entering into a legally binding agreement.</p>
+          <p>You agree to comply with all applicable laws, rules, and regulations related to online transactions and e-commerce in India.</p>
+        </section>
+
+        <section id="provision">
+          <h2>IV. Provision of Services</h2>
+          <p>ShreeAura offers curated beauty products, jewellery items, and related services through its Platform.</p>
+          <p>We may add, modify, suspend, or discontinue any product, category, or feature without prior notice.</p>
+          <p>ShreeAura may release software or app updates to improve performance or introduce new features.</p>
+        </section>
+
+        <section id="changes">
+          <h2>IV. Changes to the Terms</h2>
+          <p>ShreeAura reserves the right to modify, update, or replace these Terms at any time. Changes will be posted on this page, and continued use of the Platform signifies your acceptance of the revised Terms.</p>
+        </section>
+
+        <section id="license-platform">
+          <h2>VI. Your License to Use the Platform</h2>
+          <p>We grant you a limited, non-exclusive, non-transferable license to use the Platform for personal and non-commercial purposes.</p>
+          <p>You agree not to copy, modify, distribute, or reproduce any SA Content unless explicitly authorized.</p>
+        </section>
+
+        <section id="license-content">
+          <h2>VII. License to Your Content</h2>
+          <p>By submitting or uploading Your Content (such as reviews, photos, or feedback), you grant ShreeAura a perpetual, worldwide, royalty-free, sublicensable license to use, display, reproduce, and promote Your Content for marketing or service improvement.</p>
+          <p>You waive any moral rights or future claims related to Your Content.</p>
+        </section>
+
+        <section id="content-responsibilities">
+          <h2>VIII. Content Responsibilities & Removal</h2>
+          <p>You represent that Your Content is original, truthful, and does not infringe any third-party rights.</p>
+          <p>ShreeAura reserves the right to edit or remove any Content deemed inappropriate, misleading, or offensive, at our sole discretion.</p>
+        </section>
+
+        <section id="thirdparty">
+          <h2>IX. Third-Party Content & Links</h2>
+          <p>The Platform may include links to third-party websites or services (such as payment gateways, social media, or blogs). ShreeAura does not control or endorse third-party content and is not responsible for any damages resulting from its use.</p>
+        </section>
+
+        <section id="account-security">
+          <h2>X. Customer Account & Security</h2>
+          <p>You must provide accurate and complete personal details when creating your account (name, contact number, email, address).</p>
+          <p>You are responsible for maintaining the confidentiality of your login credentials and for all activities under your account.</p>
+          <p>Notify us immediately if you suspect any unauthorized access or misuse of your account.</p>
+        </section>
+
+        <section id="communication">
+          <h2>XI. Communication</h2>
+          <p>By using our Platform, you consent to receive transactional, promotional, and service-related messages (via SMS, email, WhatsApp, or app notifications).</p>
+          <p>You may opt out of promotional communications anytime by following the unsubscribe link or contacting support.</p>
+        </section>
+
+        <section id="pricing">
+          <h2>XII. Pricing, Payments & Refunds</h2>
+          <p>All prices listed on the Platform are inclusive of applicable taxes, unless stated otherwise.</p>
+          <p>Payments must be made via authorized payment gateways only.</p>
+          <p>ShreeAura reserves the right to modify prices or introduce offers, subscriptions, or discounts without notice.</p>
+          <p>Refunds/Returns are governed by our Return & Refund Policy (linked on the website). Refunds are processed only as per that policy.</p>
+        </section>
+
+        <section id="disclaimers">
+          <h2>XIII. Disclaimers & Limitation of Liability</h2>
+          <p>The Platform and its services are provided “as is” and “as available” without any warranties.</p>
+          <p>Shree Aura does not guarantee the accuracy, color representation, or availability of products at all times.</p>
+          <p>We shall not be liable for any indirect, incidental, or consequential losses arising out of your use of the Platform.</p>
+        </section>
+
+        <section id="governance">
+          <h2>XV. Governing Law & Dispute Resolution</h2>
+          <p>These Terms are governed by the laws of India.</p>
+          <p>Any disputes shall be subject to the exclusive jurisdiction of the courts in <em>[City, e.g., Jaipur, Rajasthan]</em>. Parties agree to attempt an amicable resolution within 15 days before pursuing legal action.</p>
+        </section>
+
+        <section id="misc">
+          <h2>XVI. Miscellaneous</h2>
+          <p><strong>No waiver:</strong> Failure to enforce any right under these Terms shall not constitute a waiver.</p>
+          <p><strong>Entire Agreement:</strong> These Terms represent the entire agreement between you and ShreeAura.</p>
+          <p><strong>Severability:</strong> If any part of these Terms is found invalid, the remaining provisions shall continue in full effect.</p>
+        </section>
+
+        <section id="privacy">
+          <h2>XVII. Privacy Policy</h2>
+          <p>By using the Platform, you agree to our Privacy Policy, which outlines how we collect, use, and protect your personal data. <a href="/privacy-policy.html" target="_blank" rel="noopener">View our Privacy Policy</a>.</p>
+        </section>
+
+        <div class="footer">
+          <p>For questions about these Terms, please contact: <strong>ShreeAura Private Limited</strong> — <a href="mailto:support@shreeaura.com">support@shreeaura.com</a></p>
+          <p style="margin-top:8px"><small>These Terms were prepared for the ShreeAura Platform and are provided as-is. This page is a template and does not constitute legal advice. Consider having a qualified attorney review and tailor the Terms to your business and applicable laws.</small></p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script>
+    // Smooth scroll for TOC links and keyboard accessibility
+    document.querySelectorAll('nav.toc a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(el){
+          el.scrollIntoView({behavior:'smooth', block:'start'});
+          history.replaceState(null,'', '#'+id);
+        }
+      });
+    });
+
+    // Make 'Enter' activate summary for keyboard users
+    document.querySelectorAll('summary').forEach(s => {
+      s.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          s.parentElement.open = !s.parentElement.open;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

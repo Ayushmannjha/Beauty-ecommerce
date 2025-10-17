@@ -1,6 +1,6 @@
 import  { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trash2, Plus, Minus, Heart, ShoppingBag, Tag, Truck, CreditCard, Shield, CheckCircle, ArrowLeft, IndianRupee } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag,  Truck, CreditCard, Shield, CheckCircle, ArrowLeft, IndianRupee } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
@@ -20,8 +20,8 @@ interface CartPageProps {
 export default function CartPage({ setCurrentPage }: CartPageProps) {
   const { items, updateQuantity, removeFromCart, getCartTotal } = useCart();
   const { user } = useAuth();
-  const [promoCode, setPromoCode] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState<any>(null);
+  
+
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [shippingInfo, setShippingInfo] = useState({
@@ -48,37 +48,14 @@ const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: nu
   longitude: 0
 });
 
-  const applyPromoCode = () => {
-    if (promoCode.toLowerCase() === 'save20') {
-      setAppliedPromo({ code: 'SAVE20', discount: 20, type: 'percentage' });
-      toast.success('Promo code applied! 20% off your order');
-    } else if (promoCode.toLowerCase() === 'free10') {
-      setAppliedPromo({ code: 'FREE10', discount: 10, type: 'fixed' });
-      toast.success('Promo code applied! $10 off your order');
-    } else {
-      setAppliedPromo(null);
-      toast.error('Invalid promo code');
-    }
-  };
-
-  const removePromoCode = () => {
-    setAppliedPromo(null);
-    setPromoCode('');
-    toast.info('Promo code removed');
-  };
 
   const subtotal = getCartTotal();
   const shipping = subtotal > 75 ? 0 : 8.99;
   const tax = subtotal * 0.08;
   
-  let discount = 0;
-  if (appliedPromo) {
-    discount = appliedPromo.type === 'percentage' 
-      ? subtotal * (appliedPromo.discount / 100)
-      : appliedPromo.discount;
-  }
+ 
   
-  const total = subtotal + shipping + tax - discount;
+  const total = subtotal + shipping + tax;
 
 const {  clearCart } = useCart();
 
@@ -321,14 +298,7 @@ const getLocation = () => {
               </div>
 
               <div className="flex space-x-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-[#FFD369] hover:text-white p-0"
-                >
-                  <Heart className="w-4 h-4 mr-1" />
-                  Save for Later
-                </Button>
+                
                 <Button
                   variant="ghost"
                   size="sm"
@@ -358,72 +328,25 @@ const getLocation = () => {
                 <CardContent className="p-6 space-y-6">
                   <h2 className="text-2xl font-bold text-[#FFD369]">Order Summary</h2>
 
-                  {/* Promo Code */}
-                  <div className="space-y-3">
-                    <div className="flex space-x-2">
-                      <Input
-                        type="text"
-                        placeholder="Promo code"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value)}
-                        className="bg-[#4B1C3F] border-[#FFD369]/30 text-white placeholder:text-white/60"
-                      />
-                      <Button 
-                        onClick={applyPromoCode}
-                        className="bg-[#FFD369] text-[#1a0f1a] hover:bg-[#FFD369]/90"
-                      >
-                        Apply
-                      </Button>
-                    </div>
-                    
-                    {appliedPromo && (
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="flex items-center justify-between bg-green-600/20 border border-green-600/30 rounded-lg p-3"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <Tag className="w-4 h-4 text-green-400" />
-                          <span className="text-green-400 text-sm">{appliedPromo.code} applied</span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={removePromoCode}
-                          className="text-green-400 hover:text-green-300 p-0"
-                        >
-                          Remove
-                        </Button>
-                      </motion.div>
-                    )}
-                  </div>
+                  
 
                   <Separator className="bg-white/20" />
 
-                  {/* Price Breakdown */}
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-white">
-                      <span>Subtotal</span>
-                      <span>₹{subtotal.toFixed(2)}</span>
-                    </div>
-                    
-                    <div className="flex justify-between text-white">
-                      <span>Shipping</span>
-                      <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
-                    </div>
-                    
-                    <div className="flex justify-between text-white">
-                      <span>Tax</span>
-                      <span>₹{tax.toFixed(2)}</span>
-                    </div>
-                    
-                    {appliedPromo && (
-                      <div className="flex justify-between text-green-400">
-                        <span>Discount</span>
-                        <span>-₹{discount.toFixed(2)}</span>
-                      </div>
-                    )}
-                  </div>
+                 {/* Price Breakdown */}
+<div className="space-y-3">
+  <div className="flex justify-between text-white">
+    <span>Subtotal</span>
+    <span>₹{subtotal.toFixed(2)}</span>
+  </div>
+  
+
+  
+  <div className="flex justify-between text-white">
+    <span>Tax</span>
+    <span>₹{(subtotal * 0.18).toFixed(2)}</span>  {/* 18% tax */}
+  </div>
+</div>
+
 
                   <Separator className="bg-white/20" />
 
@@ -557,12 +480,7 @@ const getLocation = () => {
                               <span className="text-white/70">Tax:</span>
                               <span className="text-white"><IndianRupee/>{tax.toFixed(2)}</span>
                             </div>
-                            {appliedPromo && (
-                              <div className="flex justify-between">
-                                <span className="text-green-400">Discount:</span>
-                                <span className="text-green-400">-<IndianRupee/>{discount.toFixed(2)}</span>
-                              </div>
-                            )}
+                            
                             <div className="border-t border-[#FFD369]/20 pt-2">
                               <div className="flex justify-between font-bold">
                                 <span className="text-white">Total:</span>
