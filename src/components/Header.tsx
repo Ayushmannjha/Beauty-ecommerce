@@ -268,7 +268,7 @@ export default function Header({ setCurrentPage }: HeaderProps) {
               onClick={() => setCurrentPage("seller")}
             >
               <Store size={20} />
-              {!isMobile && <span>Become a Seller</span>}
+              {!isMobile && <a href="https://seller.shreeaura.in"><span>Become a Seller</span></a>}
             </button>
 
             {!user ? (
