@@ -493,7 +493,7 @@ const getLocation = () => {
   onClick={getLocation}
   className="w-full bg-[#4B1C3F] text-[#FFD369] hover:bg-[#FFD369]/20 mb-4"
 >
-  Get My Location
+ Share your location
 </Button>
 
 {coordinates.latitude !== 0 && coordinates.longitude !== 0 && (
