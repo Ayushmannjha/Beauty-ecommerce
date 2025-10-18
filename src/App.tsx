@@ -5,7 +5,7 @@ import { Toaster } from "./components/ui/sonner";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./components/HomePage";
-import ProductDetailPage from "./components/ProductDetailPage";
+
 import CartPage from "./components/CartPage";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
@@ -101,10 +101,7 @@ function AnimatedRoutes() {
               path="/"
               element={<HomePage setCurrentPage={setCurrentPage} />}
             />
-            <Route
-              path="/product-detail"
-              element={<ProductDetailPage setCurrentPage={setCurrentPage} />}
-            />
+            
             <Route
               path="/cart"
               element={<CartPage setCurrentPage={setCurrentPage} />}

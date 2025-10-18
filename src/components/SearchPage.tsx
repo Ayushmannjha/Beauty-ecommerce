@@ -25,7 +25,7 @@ interface FilterState {
 
 export default function SearchPage({
   setCurrentPage,
-  setSelectedProduct,
+
   onAddToCart,
 }: SearchPageProps) {
   const location = useLocation();
@@ -47,12 +47,23 @@ export default function SearchPage({
   const { addToCart, items: cartItems } = useCart();
 
   const categoryOptions = [
-    "Lipsticks",
-    "Eye Palettes",
-    "Serums",
-    "Fragrances",
-    "Foundations",
-    "Glosses",
+    "Hair accesories",
+"Make-up essesntials",
+"Rings",
+"Hair care",
+"Earings",
+"Perfumes", 
+"Hand-wash",
+"Electronics", 
+"Sanitary pads ",
+"Hair removal" ,
+"Skincare",
+"Home decorative items",
+"Kitchen essentials" ,
+"Oral care",
+"Basic needs",
+"Personal care",
+"Bangles",
   ];
   const brandOptions = [
     "LuxeBeauty",
@@ -211,10 +222,7 @@ export default function SearchPage({
   };
 
   // Click product -> set selected product (parent), then navigate to detail
-  const handleSelectProduct = (product: Product) => {
-    if (setSelectedProduct) setSelectedProduct(product);
-    setCurrentPage("product-detail");
-  };
+ 
 
   // UI: filter sidebar
   const FilterSidebar = () => (
@@ -359,7 +367,7 @@ export default function SearchPage({
                 return (
                   <div key={product.productId} className="w-full">
                     <div
-                      onClick={() => handleSelectProduct(product)}
+                      
                       className="cursor-pointer"
                       role="button"
                       tabIndex={0}
