@@ -120,7 +120,7 @@ export const placeOrder = async (
   if (!res.ok) {
     throw new Error("Failed to place order");
   }
-
+console.log(order);
   return await res.text(); // e.g. "your order is placed"
 };
 
